@@ -17,10 +17,10 @@ export type AccountType = {
 }
 
 export const accounts: AccountType[] = [
-  { id: 'savings', name: 'Savings', icon: 'PiggyBank', balance: 3_450_000, trend: 4.2, color: 'var(--neon)' },
-  { id: 'investment', name: 'Investment', icon: 'TrendingUp', balance: 5_120_000, trend: 8.7, color: 'var(--teal)' },
-  { id: 'entertainment', name: 'Entertainment', icon: 'Gamepad2', balance: 285_000, trend: -12.4, color: 'var(--gold)' },
-  { id: 'emergency', name: 'Emergency', icon: 'ShieldCheck', balance: 1_800_000, trend: 2.1, color: 'var(--primary)' },
+  { id: 'savings', name: 'Epargne', icon: 'PiggyBank', balance: 3_450_000, trend: 4.2, color: 'var(--neon)' },
+  { id: 'investment', name: 'Investissement', icon: 'TrendingUp', balance: 5_120_000, trend: 8.7, color: 'var(--teal)' },
+  { id: 'entertainment', name: 'Divertissement', icon: 'Gamepad2', balance: 285_000, trend: -12.4, color: 'var(--gold)' },
+  { id: 'emergency', name: 'Urgence', icon: 'ShieldCheck', balance: 1_800_000, trend: 2.1, color: 'var(--primary)' },
 ]
 
 export const totalBalance = accounts.reduce((s, a) => s + a.balance, 0)
@@ -65,14 +65,14 @@ export type Transaction = {
 }
 
 export const transactions: Transaction[] = [
-  { id: 't1', date: '2026-07-21', category: 'Income', icon: 'ArrowDownLeft', description: 'Salary — TechCorp SA', account: 'Savings', amount: 1_450_000, status: 'completed' },
-  { id: 't2', date: '2026-07-20', category: 'Food', icon: 'UtensilsCrossed', description: 'Auchan Groceries', account: 'Entertainment', amount: -48_500, status: 'completed' },
-  { id: 't3', date: '2026-07-19', category: 'Transport', icon: 'Bus', description: 'Yango rides', account: 'Entertainment', amount: -12_000, status: 'completed' },
-  { id: 't4', date: '2026-07-18', category: 'Investment', icon: 'TrendingUp', description: 'Bond purchase', account: 'Investment', amount: -350_000, status: 'completed' },
-  { id: 't5', date: '2026-07-17', category: 'Rent', icon: 'Home', description: 'July apartment rent', account: 'Savings', amount: -210_000, status: 'completed' },
-  { id: 't6', date: '2026-07-16', category: 'Utilities', icon: 'Zap', description: 'SENELEC electricity', account: 'Savings', amount: -34_000, status: 'pending' },
-  { id: 't7', date: '2026-07-15', category: 'Entertainment', icon: 'Clapperboard', description: 'Canal+ subscription', account: 'Entertainment', amount: -25_000, status: 'completed' },
-  { id: 't8', date: '2026-07-14', category: 'Transfer', icon: 'ArrowUpRight', description: 'Wave transfer to family', account: 'Emergency', amount: -75_000, status: 'failed' },
+  { id: 't1', date: '2026-07-21', category: 'Income', icon: 'ArrowDownLeft', description: 'Salary — TechCorp SA', account: 'Epargne', amount: 1_450_000, status: 'completed' },
+  { id: 't2', date: '2026-07-20', category: 'Food', icon: 'UtensilsCrossed', description: 'Auchan Groceries', account: 'Divertisement', amount: -48_500, status: 'completed' },
+  { id: 't3', date: '2026-07-19', category: 'Transport', icon: 'Bus', description: 'Yango rides', account: 'Divertisement', amount: -12_000, status: 'completed' },
+  { id: 't4', date: '2026-07-18', category: 'Investment', icon: 'TrendingUp', description: 'Bond purchase', account: 'Investissement', amount: -350_000, status: 'completed' },
+  { id: 't5', date: '2026-07-17', category: 'Rent', icon: 'Home', description: 'July apartment rent', account: 'Epargne', amount: -210_000, status: 'completed' },
+  { id: 't6', date: '2026-07-16', category: 'Utilities', icon: 'Zap', description: 'SENELEC electricity', account: 'Epargne', amount: -34_000, status: 'pending' },
+  { id: 't7', date: '2026-07-15', category: 'Entertainment', icon: 'Clapperboard', description: 'Canal+ subscription', account: 'Divertisement', amount: -25_000, status: 'completed' },
+  { id: 't8', date: '2026-07-14', category: 'Transfer', icon: 'ArrowUpRight', description: 'Wave transfer to family', account: 'Urgence', amount: -75_000, status: 'failed' },
 ]
 
 export type Goal = {

@@ -55,21 +55,21 @@ export function ProjectionCalculator() {
 
   const label =
     result.yearsToFi !== null
-      ? `You could be financially independent in ${result.yearsToFi} years`
-      : `Keep going — independence projected beyond ${years} years`
+      ? `Tu peux indépendant financièrement dans ${result.yearsToFi} ans`
+      : `Continue ainsi — independance projetée au-dela de ${years} years`
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,360px)_1fr]">
       <Card className="h-fit backdrop-blur-xl">
         <CardHeader>
-          <CardTitle>Your situation</CardTitle>
+          <CardTitle>Ta situation</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
-          <MoneyField label="Current monthly income" value={income} onChange={setIncome} />
-          <MoneyField label="Current monthly expenses" value={expenses} onChange={setExpenses} />
-          <SliderField label="Monthly savings target" value={savingsTarget} onChange={setSavingsTarget} min={0} max={80} unit="%" />
-          <RateField label="Expected annual income growth" value={incomeGrowth} onChange={setIncomeGrowth} />
-          <RateField label="Investment return rate" value={returnRate} onChange={setReturnRate} />
+          <MoneyField label="Revenu Mensuel Actuel" value={income} onChange={setIncome} />
+          <MoneyField label="Dépenses Mensuelles Actuelles" value={expenses} onChange={setExpenses} />
+          <SliderField label="Objectif d'Epargne Mensuelle" value={savingsTarget} onChange={setSavingsTarget} min={0} max={80} unit="%" />
+          <RateField label="Croissance Annuelle Attendue du Revenu" value={incomeGrowth} onChange={setIncomeGrowth} />
+          <RateField label="Taux de Retour sur Investissement" value={returnRate} onChange={setReturnRate} />
           <SliderField label="Projection horizon" value={years} onChange={setYears} min={1} max={40} unit="yrs" />
         </CardContent>
       </Card>
@@ -78,7 +78,7 @@ export function ProjectionCalculator() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_auto]">
           <Card className="backdrop-blur-xl">
             <CardContent className="flex h-full flex-col justify-center gap-2">
-              <ResultStat label={`Projected net worth in ${years} years`} value={formatFCFA(result.finalNetWorth)} accent="neon" large />
+              <ResultStat label={`Valeur nette projetée dans ${years} ans`} value={formatFCFA(result.finalNetWorth)} accent="neon" large />
             </CardContent>
           </Card>
           <Card className="backdrop-blur-xl">
@@ -89,7 +89,7 @@ export function ProjectionCalculator() {
                   {result.fiScore}
                 </span>
               </div>
-              <div className="max-w-[11rem]">
+              <div className="max-w-44">
                 <p className="text-xs font-medium text-muted-foreground">Financial independence score</p>
                 <p className="mt-1 text-sm font-semibold text-pretty">{label}</p>
               </div>
@@ -136,10 +136,10 @@ export function ProjectionCalculator() {
                 <TableHeader>
                   <TableRow className="border-border hover:bg-transparent">
                     <TableHead>Year</TableHead>
-                    <TableHead className="text-right">Income</TableHead>
-                    <TableHead className="text-right">Expenses</TableHead>
-                    <TableHead className="text-right">Savings</TableHead>
-                    <TableHead className="text-right">Net Worth</TableHead>
+                    <TableHead className="text-right">Revenu</TableHead>
+                    <TableHead className="text-right">Depenses</TableHead>
+                    <TableHead className="text-right">Epargnes</TableHead>
+                    <TableHead className="text-right">Valeur nette</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

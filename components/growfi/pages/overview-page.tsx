@@ -22,16 +22,16 @@ export function OverviewPage({ onNavigate }: { onNavigate: (id: 'transactions' |
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Welcome back, Amara"
+        title="Bienvenue, Campbell"
         subtitle="Here's how your money is growing this month."
       />
 
       {/* KPI row */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Total Balance" value={formatFCFA(totalBalance)} icon="Wallet" trend={5.4} accent="neon" />
-        <KpiCard label="Monthly Income" value={formatFCFA(monthlyIncome)} icon="ArrowDownLeft" trend={3.1} accent="primary" />
-        <KpiCard label="Monthly Expenses" value={formatFCFA(monthlyExpenses)} icon="ArrowUpRight" trend={-2.4} accent="negative" />
-        <KpiCard label="Savings Rate" value={`${savingsRate}%`} icon="TrendingUp" accent="gold">
+        <KpiCard label="Total Solde" value={formatFCFA(totalBalance)} icon="Wallet" trend={5.4} accent="neon" />
+        <KpiCard label="Revenu Mensuel" value={formatFCFA(monthlyIncome)} icon="ArrowDownLeft" trend={3.1} accent="primary" />
+        <KpiCard label="Depenses Mensuelles" value={formatFCFA(monthlyExpenses)} icon="ArrowUpRight" trend={-2.4} accent="negative" />
+        <KpiCard label="Taux D'épargne" value={`${savingsRate}%`} icon="TrendingUp" accent="gold">
           <CircularProgress value={savingsRate} />
         </KpiCard>
       </div>
@@ -40,7 +40,7 @@ export function OverviewPage({ onNavigate }: { onNavigate: (id: 'transactions' |
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="backdrop-blur-xl lg:col-span-2">
           <CardHeader>
-            <CardTitle>Spending Evolution</CardTitle>
+            <CardTitle>Evolution des Depenses</CardTitle>
           </CardHeader>
           <CardContent>
             <SpendingEvolutionChart />
@@ -48,7 +48,7 @@ export function OverviewPage({ onNavigate }: { onNavigate: (id: 'transactions' |
         </Card>
         <Card className="backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>Expense Breakdown</CardTitle>
+            <CardTitle>Répartition des Dépenses</CardTitle>
           </CardHeader>
           <CardContent>
             <ExpenseDonutChart />
@@ -60,9 +60,9 @@ export function OverviewPage({ onNavigate }: { onNavigate: (id: 'transactions' |
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="backdrop-blur-xl lg:col-span-2">
           <CardHeader className="flex-row items-center justify-between">
-            <CardTitle>Recent Transactions</CardTitle>
+            <CardTitle>Transactions recentes</CardTitle>
             <Button variant="ghost" size="sm" onClick={() => onNavigate('transactions')}>
-              View all
+              Voir tout
             </Button>
           </CardHeader>
           <CardContent>
@@ -71,9 +71,9 @@ export function OverviewPage({ onNavigate }: { onNavigate: (id: 'transactions' |
         </Card>
         <Card className="backdrop-blur-xl">
           <CardHeader className="flex-row items-center justify-between">
-            <CardTitle>Accounts</CardTitle>
+            <CardTitle>Comptes</CardTitle>
             <Button variant="ghost" size="sm" onClick={() => onNavigate('accounts')}>
-              Manage
+              Gérer
             </Button>
           </CardHeader>
           <CardContent className="flex flex-col gap-2.5">

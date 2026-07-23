@@ -35,18 +35,18 @@ export function TransactionsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="Transactions" subtitle="Every movement across your accounts." />
+      <PageHeader title="Transactions" subtitle="Chaque mouvement au travers de tes comptes" />
 
       <div className="grid grid-cols-2 gap-4">
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Total inflow</p>
+            <p className="text-xs text-muted-foreground">Total Entrant</p>
             <Money value={inflow} className="mt-1 block text-lg font-extrabold text-neon" suffix={false} />
           </CardContent>
         </Card>
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Total outflow</p>
+            <p className="text-xs text-muted-foreground">Total Sortant</p>
             <Money value={outflow} className="mt-1 block text-lg font-extrabold text-negative" suffix={false} />
           </CardContent>
         </Card>
@@ -70,7 +70,7 @@ export function TransactionsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="all">All accounts</SelectItem>
+                  <SelectItem value="all">Tous les comptes</SelectItem>
                   {accounts.map((a) => (
                     <SelectItem key={a.id} value={a.name}>
                       {a.name}
@@ -88,7 +88,7 @@ export function TransactionsPage() {
               <span className="flex size-12 items-center justify-center rounded-full bg-white/5 text-muted-foreground">
                 <Search className="size-6" />
               </span>
-              <p className="text-sm font-medium">No transactions found</p>
+              <p className="text-sm font-medium">Aucune transaction trouvée</p>
               <p className="text-xs text-muted-foreground">Try adjusting your search or filter.</p>
             </div>
           )}

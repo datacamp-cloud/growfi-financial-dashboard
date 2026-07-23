@@ -12,14 +12,14 @@ export function GoalsPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Goals"
-        subtitle="Track your savings targets and stay motivated."
+        title="Objectifs"
+        subtitle="Suivez vos objectifs d'épargne et restez motivé."
         action={
           <Button 
             className="bg-linear-to-r from-primary to-teal text-primary-foreground"
           >
             <Plus data-icon="inline-start" />
-            Add New Goal
+            Nouvel objectif
           </Button>
         }
       />

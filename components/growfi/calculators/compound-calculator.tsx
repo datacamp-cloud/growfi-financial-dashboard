@@ -55,21 +55,21 @@ export function CompoundCalculator() {
           <CardTitle>Parameters</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
-          <MoneyField label="Initial capital" value={initial} onChange={setInitial} />
-          <MoneyField label="Monthly contribution" value={monthly} onChange={setMonthly} />
-          <RateField label="Annual interest rate" value={rate} onChange={setRate} />
-          <SliderField label="Duration" value={years} onChange={setYears} min={1} max={30} unit="yrs" />
+          <MoneyField label="Capital Initial" value={initial} onChange={setInitial} />
+          <MoneyField label="Contribution Mensuelle" value={monthly} onChange={setMonthly} />
+          <RateField label="Taux d'Interêt Annuel" value={rate} onChange={setRate} />
+          <SliderField label="Période" value={years} onChange={setYears} min={1} max={30} unit="yrs" />
           <div className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-muted-foreground">Compounding frequency</span>
+            <span className="text-xs font-medium text-muted-foreground">Fréquence de Capitalisation</span>
             <Select value={freq} onValueChange={(v) => setFreq(v as CompoundFreq)}>
               <SelectTrigger className="h-10 w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="monthly">Monthly</SelectItem>
-                  <SelectItem value="quarterly">Quarterly</SelectItem>
-                  <SelectItem value="annually">Annually</SelectItem>
+                  <SelectItem value="monthly">Mensuelle</SelectItem>
+                  <SelectItem value="quarterly">Semestrielle</SelectItem>
+                  <SelectItem value="annually">Annuelle</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -81,7 +81,7 @@ export function CompoundCalculator() {
       <div className="flex flex-col gap-4">
         <Card className="backdrop-blur-xl">
           <CardContent className="flex flex-col gap-5">
-            <ResultStat label="Final capital" value={formatFCFA(result.final)} accent="neon" large />
+            <ResultStat label="Capital final" value={formatFCFA(result.final)} accent="neon" large />
 
             <div className="flex flex-col gap-2">
               <div className="flex h-3 w-full overflow-hidden rounded-full bg-white/10">
@@ -104,7 +104,7 @@ export function CompoundCalculator() {
 
         <Card className="backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>Growth over time</CardTitle>
+            <CardTitle>Croissance/Temps</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-60 w-full">

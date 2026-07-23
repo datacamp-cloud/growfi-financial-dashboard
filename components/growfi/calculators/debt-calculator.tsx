@@ -60,7 +60,7 @@ export function DebtCalculator() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'growfi-amortization.csv'
+    a.download = 'growfi-amortissement.csv'
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -68,21 +68,21 @@ export function DebtCalculator() {
   function monthLabel(monthIndex: number) {
     const d = new Date(start)
     d.setMonth(d.getMonth() + monthIndex - 1)
-    return d.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })
+    return d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' })
   }
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,360px)_1fr]">
       <Card className="h-fit backdrop-blur-xl">
         <CardHeader>
-          <CardTitle>Loan details</CardTitle>
+          <CardTitle>Details du Prêt</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
           <MoneyField label="Loan amount" value={loan} onChange={setLoan} />
           <RateField label="Annual interest rate" value={rate} onChange={setRate} />
           <SliderField label="Duration" value={months} onChange={setMonths} min={6} max={120} step={6} unit="mo" />
           <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-muted-foreground">Start date</span>
+            <span className="text-xs font-medium text-muted-foreground">Date Debut</span>
             <Input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="h-10 font-mono" />
           </label>
         </CardContent>
@@ -91,17 +91,17 @@ export function DebtCalculator() {
       <div className="flex flex-col gap-4">
         <Card className="backdrop-blur-xl">
           <CardContent className="flex flex-col gap-5">
-            <ResultStat label="Monthly payment" value={formatFCFA(result.payment)} accent="neon" large />
+            <ResultStat label="Paiement Mensuel" value={formatFCFA(result.payment)} accent="neon" large />
             <div className="grid grid-cols-2 gap-4">
-              <ResultStat label="Total repaid" value={formatFCFA(result.totalRepaid)} />
-              <ResultStat label="Total interest" value={formatFCFA(result.totalInterest)} accent="negative" />
+              <ResultStat label="Total remboursé" value={formatFCFA(result.totalRepaid)} />
+              <ResultStat label="Total intérêt" value={formatFCFA(result.totalInterest)} accent="negative" />
             </div>
           </CardContent>
         </Card>
 
         <Card className="backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>Principal vs Interest</CardTitle>
+            <CardTitle>Principal vs Intérêt</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-60 w-full">
@@ -121,7 +121,7 @@ export function DebtCalculator() {
 
         <Card className="backdrop-blur-xl">
           <CardHeader className="flex-row items-center justify-between">
-            <CardTitle>Amortization schedule</CardTitle>
+            <CardTitle>Tableau d'Amortissement</CardTitle>
             <Button variant="outline" size="sm" onClick={download}>
               <Download data-icon="inline-start" />
               CSV
@@ -132,11 +132,11 @@ export function DebtCalculator() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-border hover:bg-transparent">
-                    <TableHead>Month</TableHead>
-                    <TableHead className="text-right">Payment</TableHead>
+                    <TableHead>Mois</TableHead>
+                    <TableHead className="text-right">Paiement</TableHead>
                     <TableHead className="text-right">Principal</TableHead>
-                    <TableHead className="text-right">Interest</TableHead>
-                    <TableHead className="text-right">Balance</TableHead>
+                    <TableHead className="text-right">Intérêt</TableHead>
+                    <TableHead className="text-right">Solde</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

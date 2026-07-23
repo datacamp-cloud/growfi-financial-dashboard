@@ -32,8 +32,8 @@ export function StatisticsPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Statistics"
-        subtitle="Analyse your cash flow across different periods."
+        title="Statistiques"
+        subtitle="Analyse ton cash-flow selon plusieurs périodes"
         action={
           <ToggleGroup
             value={[period]}
@@ -57,19 +57,19 @@ export function StatisticsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Total Income</p>
+            <p className="text-xs text-muted-foreground">Total Revenu</p>
             <Money value={totalIncome} className="mt-1 block text-lg font-extrabold text-neon" />
           </CardContent>
         </Card>
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Total Expenses</p>
+            <p className="text-xs text-muted-foreground">Total Depenses</p>
             <Money value={totalExpenses} className="mt-1 block text-lg font-extrabold text-negative" />
           </CardContent>
         </Card>
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Net Savings</p>
+            <p className="text-xs text-muted-foreground">Epargne Nette</p>
             <Money value={net} className="mt-1 block text-lg font-extrabold" colored />
           </CardContent>
         </Card>

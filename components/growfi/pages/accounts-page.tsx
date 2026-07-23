@@ -9,11 +9,14 @@ import { Money, PageHeader, StatBar, TrendBadge } from '../shared'
 export function AccountsPage() {
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="Accounts" subtitle="All your balances in one place." />
+      <PageHeader 
+        title="Comptes" 
+        subtitle="Tous tes comptes en un endroit" 
+      />
 
-      <Card className="overflow-hidden border-0 bg-gradient-to-br from-primary/20 via-card to-teal/10 backdrop-blur-xl ring-1 ring-neon/20">
+      <Card className="overflow-hidden border-0 bg-linear-to-br from-primary/20 via-card to-teal/10 backdrop-blur-xl ring-1 ring-neon/20">
         <CardContent className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-muted-foreground">Total net balance</span>
+          <span className="text-xs font-medium text-muted-foreground">Total net</span>
           <Money value={totalBalance} className="text-3xl font-extrabold sm:text-4xl" />
           <div className="mt-2">
             <TrendBadge value={5.4} />
@@ -39,13 +42,13 @@ export function AccountsPage() {
                   </span>
                   <div className="flex-1">
                     <p className="font-semibold">{a.name}</p>
-                    <p className="text-xs text-muted-foreground">{share}% of total</p>
+                    <p className="text-xs text-muted-foreground">{share}% du total</p>
                   </div>
                   <TrendBadge value={a.trend} />
                 </div>
                 <Money value={a.balance} className="text-xl font-extrabold" suffix={false} />
                 <StatBar percent={share} color={a.color} />
-                <p className="text-xs text-muted-foreground">Represents {formatFCFA(a.balance)}</p>
+                <p className="text-xs text-muted-foreground">Represente {formatFCFA(a.balance)}</p>
               </CardContent>
             </Card>
           )

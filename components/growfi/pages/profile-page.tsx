@@ -37,7 +37,7 @@ export function ProfilePage() {
             <p className="mt-1 text-sm text-muted-foreground">amara.kone@growfi.africa</p>
             <p className="text-xs text-muted-foreground">Member since March 2024 · Dakar, Senegal</p>
           </div>
-          <Button variant="outline">Edit profile</Button>
+          <Button variant="outline">Modifier</Button>
         </CardContent>
       </Card>
 
@@ -89,7 +89,7 @@ export function ProfilePage() {
 
       <Button variant="destructive" className="w-full sm:w-auto">
         <LogOut data-icon="inline-start" />
-        Sign out
+        Se déconnecter
       </Button>
     </div>
   )

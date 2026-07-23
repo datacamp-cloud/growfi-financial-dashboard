@@ -1,19 +1,16 @@
 'use client'
 
-import type { ViewId } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { Icon } from './icon'
 import { Logo } from './logo'
 import { navItems } from './nav-items'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { useRouter, usePathname } from 'next/navigation'
 
-export function Sidebar({
-  active,
-  onNavigate,
-}: {
-  active: ViewId
-  onNavigate: (id: ViewId) => void
-}) {
+export function Sidebar() {
+  const router = useRouter()
+  const pathname = usePathname()
+
   return (
     <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-sidebar-border bg-sidebar px-4 py-6 lg:flex">
       <div className="px-2">
@@ -22,12 +19,12 @@ export function Sidebar({
 
       <nav className="mt-8 flex flex-1 flex-col gap-1">
         {navItems.map((item) => {
-          const isActive = active === item.id
+          const isActive = pathname === item.href
           return (
             <button
               key={item.id}
               type="button"
-              onClick={() => onNavigate(item.id)}
+              onClick={() => router.push(item.href)}
               aria-current={isActive ? 'page' : undefined}
               className={cn(
                 'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',

@@ -1,5 +1,6 @@
 'use client'
 
+
 import {
   Area,
   AreaChart,
@@ -15,6 +16,7 @@ import {
 import { spendingEvolution, expenseBreakdown } from '@/lib/data'
 import { formatFCFA, formatFCFACompact } from '@/lib/format'
 import { ChartTooltip } from './shared'
+
 
 const areaSeries = [
   { key: 'investment', color: 'var(--teal)' },

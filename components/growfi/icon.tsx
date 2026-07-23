@@ -47,6 +47,8 @@ const map: Record<string, LucideIcon> = {
   Zap,
 }
 
+export type IconName = keyof typeof map
+
 export function Icon({
   name,
   className,

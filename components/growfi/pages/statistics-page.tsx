@@ -39,7 +39,7 @@ export function StatisticsPage() {
             value={[period]}
             onValueChange={(v) => v[0] && setPeriod(v[0] as Period)}
             spacing={2}
-            className="rounded-xl border border-border bg-white/[0.03] p-1"
+            className="rounded-xl border border-border bg-white/3 p-1"
           >
             {(Object.keys(statsData) as Period[]).map((p) => (
               <ToggleGroupItem

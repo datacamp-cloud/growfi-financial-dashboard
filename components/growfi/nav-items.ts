@@ -24,5 +24,5 @@ export const mobileNavItems: (NavItem | { id: 'add'; label: string; icon: string
   { id: 'add', label: 'Add', icon: 'ArrowUpRight', href: '/add' },
   { id: 'goals', label: 'Goals', icon: 'Target', href: '/goals' },
   { id: 'profile', label: 'Profile', icon: 'User', href: '/profile' },
-  { id: 'transactions', label: 'Transactions', icon: 'Receipt', href: '/transactions' },
+  // { id: 'transactions', label: 'Transactions', icon: 'Receipt', href: '/transactions' },
 ]

@@ -1,3 +1,8 @@
+# Configuration des surcharges de dépendances
+overrides:
+  "hono": "4.12.25"
+
+# Autorisations pour l'exécution des scripts de build (postinstall, etc.)
 allowBuilds:
   msw: true
   sharp: true

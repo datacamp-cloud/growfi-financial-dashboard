@@ -15,7 +15,9 @@ export function GoalsPage() {
         title="Goals"
         subtitle="Track your savings targets and stay motivated."
         action={
-          <Button className="bg-gradient-to-r from-primary to-teal text-primary-foreground">
+          <Button 
+            className="bg-linear-to-r from-primary to-teal text-primary-foreground"
+          >
             <Plus data-icon="inline-start" />
             Add New Goal
           </Button>

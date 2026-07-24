@@ -21,7 +21,7 @@ export function TermTooltip({
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
-        <TooltipTrigger asChild>
+        <TooltipTrigger aschild="true">
           <span
             className={cn(
               'inline-flex cursor-help items-center gap-1 border-b border-dashed border-muted-foreground/50 text-foreground',
@@ -29,12 +29,12 @@ export function TermTooltip({
             )}
           >
             {term}
-            <HelpCircle className="size-3 shrink-0 text-foreground" />
+            <HelpCircle className="size-3 shrink-0 text-accent-foreground" />
           </span>
         </TooltipTrigger>
         <TooltipContent
           side="top"
-          className="max-w-60 rounded-xl border border-border bg-popover/95 p-3 text-xs leading-relaxed shadow-xl backdrop-blur-xl"
+          className="max-w-60 rounded-xl border border-border bg-popover/95 p-3 text-xs leading-relaxed shadow-xl backdrop-blur-xl text-foreground"
         >
           {definition}
         </TooltipContent>

@@ -6,20 +6,21 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { PageHeader } from '../shared'
+import { TermTooltip } from '../term-tooltip'
 import { Bell, CreditCard, Globe, Lock, LogOut, Moon, ShieldCheck } from 'lucide-react'
 
 const settings = [
-  { icon: Bell, label: 'Notifications', desc: 'Push, email and budget alerts' },
-  { icon: Lock, label: 'Security', desc: 'Password, 2FA and devices' },
-  { icon: Globe, label: 'Language & region', desc: 'English · FCFA (XOF)' },
-  { icon: CreditCard, label: 'Payment methods', desc: 'Wave, Orange Money, cards' },
-  { icon: Moon, label: 'Appearance', desc: 'Dark theme' },
+  { icon: Bell,       label: 'Notifications',       desc: 'Alertes push, email et dépassements de budget' },
+  { icon: Lock,       label: 'Sécurité',             desc: 'Mot de passe, double authentification et appareils' },
+  { icon: Globe,      label: 'Langue & région',      desc: 'Français · FCFA (XOF)' },
+  { icon: CreditCard, label: 'Moyens de paiement',   desc: 'Wave, Orange Money, cartes bancaires' },
+  { icon: Moon,       label: 'Apparence',            desc: 'Thème sombre' },
 ]
 
 export function ProfilePage() {
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="Profile" subtitle="Manage your account and preferences." />
+      <PageHeader title="Profil" subtitle="Gérez votre compte et vos préférences." />
 
       <Card className="backdrop-blur-xl">
         <CardContent className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
@@ -35,7 +36,7 @@ export function ProfilePage() {
               </Badge>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">amara.kone@growfi.africa</p>
-            <p className="text-xs text-muted-foreground">Member since March 2024 · Dakar, Senegal</p>
+            <p className="text-xs text-muted-foreground">Membre depuis mars 2024 · Dakar, Sénégal</p>
           </div>
           <Button variant="outline">Modifier</Button>
         </CardContent>
@@ -44,27 +45,37 @@ export function ProfilePage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Credit score</p>
+            <p className="text-xs text-muted-foreground">
+              <TermTooltip
+                term="Score de crédit"
+                definition="Une note (généralement entre 300 et 850) qui mesure ta fiabilité en tant qu'emprunteur. Plus le score est élevé, plus il est facile d'obtenir un prêt à un bon taux."
+              />
+            </p>
             <p className="mt-1 font-mono text-2xl font-extrabold text-neon">742</p>
           </CardContent>
         </Card>
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Active goals</p>
+            <p className="text-xs text-muted-foreground">Objectifs actifs</p>
             <p className="mt-1 font-mono text-2xl font-extrabold">4</p>
           </CardContent>
         </Card>
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Savings streak</p>
-            <p className="mt-1 font-mono text-2xl font-extrabold text-gold">18 mo</p>
+            <p className="text-xs text-muted-foreground">
+              <TermTooltip
+                term="Série d'épargne"
+                definition="Le nombre de mois consécutifs où tu as atteint ton objectif d'épargne. Une longue série est signe d'une excellente discipline financière !"
+              />
+            </p>
+            <p className="mt-1 font-mono text-2xl font-extrabold text-gold">18 mois</p>
           </CardContent>
         </Card>
       </div>
 
       <Card className="backdrop-blur-xl">
         <CardHeader>
-          <CardTitle>Settings</CardTitle>
+          <CardTitle>Paramètres</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col">
           {settings.map((s, i) => (

@@ -23,13 +23,14 @@ import { computeProjection } from '@/lib/calculators'
 import { formatFCFA, formatFCFACompact } from '@/lib/format'
 import { MoneyField, RateField, SliderField, ResultStat } from '../calc-inputs'
 import { ChartTooltip } from '../shared'
+import { TermTooltip } from '../term-tooltip'
 import { CircularProgress } from '../kpi-card'
 
 const lines = [
-  { key: 'income', color: 'var(--teal)' },
-  { key: 'expenses', color: 'var(--negative)' },
-  { key: 'savings', color: 'var(--gold)' },
-  { key: 'netWorth', color: 'var(--neon)' },
+  { key: 'income',   label: 'Revenus',      color: 'var(--teal)' },
+  { key: 'expenses', label: 'Dépenses',     color: 'var(--negative)' },
+  { key: 'savings',  label: 'Épargne',      color: 'var(--gold)' },
+  { key: 'netWorth', label: 'Valeur nette', color: 'var(--neon)' },
 ]
 
 export function ProjectionCalculator() {
@@ -55,22 +56,52 @@ export function ProjectionCalculator() {
 
   const label =
     result.yearsToFi !== null
-      ? `Tu peux indépendant financièrement dans ${result.yearsToFi} ans`
-      : `Continue ainsi — independance projetée au-dela de ${years} years`
+      ? `Tu pourrais être financièrement indépendant(e) dans ${result.yearsToFi} ans`
+      : `Continue ainsi — indépendance projetée au-delà de ${years} ans`
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,360px)_1fr]">
       <Card className="h-fit backdrop-blur-xl">
         <CardHeader>
-          <CardTitle>Ta situation</CardTitle>
+          <CardTitle>Ta situation actuelle</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
-          <MoneyField label="Revenu Mensuel Actuel" value={income} onChange={setIncome} />
-          <MoneyField label="Dépenses Mensuelles Actuelles" value={expenses} onChange={setExpenses} />
-          <SliderField label="Objectif d'Epargne Mensuelle" value={savingsTarget} onChange={setSavingsTarget} min={0} max={80} unit="%" />
-          <RateField label="Croissance Annuelle Attendue du Revenu" value={incomeGrowth} onChange={setIncomeGrowth} />
-          <RateField label="Taux de Retour sur Investissement" value={returnRate} onChange={setReturnRate} />
-          <SliderField label="Projection horizon" value={years} onChange={setYears} min={1} max={40} unit="yrs" />
+          <MoneyField label="Revenu mensuel" value={income} onChange={setIncome} />
+          <MoneyField label="Dépenses mensuelles" value={expenses} onChange={setExpenses} />
+          <SliderField
+            label={
+              <TermTooltip
+                term="Objectif d'épargne mensuelle"
+                definition="Le pourcentage de ton revenu que tu mets de côté chaque mois. Par exemple, 25% signifie que tu épargnes 1 sur 4 francs gagnés."
+              />
+            }
+            value={savingsTarget}
+            onChange={setSavingsTarget}
+            min={0}
+            max={80}
+            unit="%"
+          />
+          <RateField
+            label={
+              <TermTooltip
+                term="Croissance annuelle du revenu"
+                definition="Le pourcentage d'augmentation de ton revenu chaque année (promotions, activités supplémentaires, etc.)."
+              />
+            }
+            value={incomeGrowth}
+            onChange={setIncomeGrowth}
+          />
+          <RateField
+            label={
+              <TermTooltip
+                term="Taux de rendement de tes placements"
+                definition="Le gain annuel estimé sur tes investissements. Historiquement, un portefeuille diversifié rapporte entre 6% et 10% par an."
+              />
+            }
+            value={returnRate}
+            onChange={setReturnRate}
+          />
+          <SliderField label="Horizon de projection (années)" value={years} onChange={setYears} min={1} max={40} unit="ans" />
         </CardContent>
       </Card>
 
@@ -78,7 +109,17 @@ export function ProjectionCalculator() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_auto]">
           <Card className="backdrop-blur-xl">
             <CardContent className="flex h-full flex-col justify-center gap-2">
-              <ResultStat label={`Valeur nette projetée dans ${years} ans`} value={formatFCFA(result.finalNetWorth)} accent="neon" large />
+              <ResultStat
+                label={
+                  <TermTooltip
+                    term={`Valeur nette dans ${years} ans`}
+                    definition="La valeur nette est la différence entre ce que tu possèdes (épargne + investissements) et ce que tu dois (dettes). C'est le vrai indicateur de ta richesse."
+                  />
+                }
+                value={formatFCFA(result.finalNetWorth)}
+                accent="neon"
+                large
+              />
             </CardContent>
           </Card>
           <Card className="backdrop-blur-xl">
@@ -90,7 +131,12 @@ export function ProjectionCalculator() {
                 </span>
               </div>
               <div className="max-w-44">
-                <p className="text-xs font-medium text-muted-foreground">Financial independence score</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  <TermTooltip
+                    term="Score d'indépendance financière"
+                    definition="Une estimation de ta progression vers l'indépendance financière — le moment où tes investissements génèrent assez pour couvrir tes dépenses sans travailler."
+                  />
+                </p>
                 <p className="mt-1 text-sm font-semibold text-pretty">{label}</p>
               </div>
             </CardContent>
@@ -99,27 +145,27 @@ export function ProjectionCalculator() {
 
         <Card className="backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>Projection</CardTitle>
+            <CardTitle>Projection financière</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={result.rows} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
                   <CartesianGrid vertical={false} />
-                  <XAxis dataKey="year" tickLine={false} axisLine={false} fontSize={12} tickFormatter={(v) => `Y${v}`} />
+                  <XAxis dataKey="year" tickLine={false} axisLine={false} fontSize={12} tickFormatter={(v) => `An ${v}`} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} width={44} tickFormatter={(v) => formatFCFACompact(v as number)} />
                   <Tooltip content={<ChartTooltip />} />
                   {lines.map((l) => (
-                    <Line key={l.key} type="monotone" dataKey={l.key} name={l.key} stroke={l.color} strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+                    <Line key={l.key} type="monotone" dataKey={l.key} name={l.label} stroke={l.color} strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
                   ))}
                 </LineChart>
               </ResponsiveContainer>
             </div>
             <div className="mt-3 flex flex-wrap gap-3">
               {lines.map((l) => (
-                <span key={l.key} className="flex items-center gap-1.5 text-xs capitalize text-muted-foreground">
+                <span key={l.key} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <span className="size-2.5 rounded-full" style={{ backgroundColor: l.color }} />
-                  {l.key === 'netWorth' ? 'net worth' : l.key}
+                  {l.label}
                 </span>
               ))}
             </div>
@@ -128,24 +174,24 @@ export function ProjectionCalculator() {
 
         <Card className="backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>Year-by-year projection</CardTitle>
+            <CardTitle>Détail année par année</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="max-h-72 overflow-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="border-border hover:bg-transparent">
-                    <TableHead>Year</TableHead>
-                    <TableHead className="text-right">Revenu</TableHead>
-                    <TableHead className="text-right">Depenses</TableHead>
-                    <TableHead className="text-right">Epargnes</TableHead>
+                    <TableHead>Année</TableHead>
+                    <TableHead className="text-right">Revenus</TableHead>
+                    <TableHead className="text-right">Dépenses</TableHead>
+                    <TableHead className="text-right">Épargne</TableHead>
                     <TableHead className="text-right">Valeur nette</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {result.rows.map((row) => (
                     <TableRow key={row.year} className="border-border/60">
-                      <TableCell className="text-sm">Year {row.year}</TableCell>
+                      <TableCell className="text-sm">Année {row.year}</TableCell>
                       <TableCell className="text-right font-mono text-xs text-teal">{formatFCFA(row.income, false)}</TableCell>
                       <TableCell className="text-right font-mono text-xs text-negative">{formatFCFA(row.expenses, false)}</TableCell>
                       <TableCell className="text-right font-mono text-xs text-gold">{formatFCFA(row.savings, false)}</TableCell>

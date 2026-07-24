@@ -16,14 +16,21 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { statsData, categoryStats } from '@/lib/data'
 import { formatFCFA, formatFCFACompact, formatPercent } from '@/lib/format'
 import { ChartTooltip, Money, PageHeader, StatBar } from '../shared'
+import { TermTooltip } from '../term-tooltip'
 
 type Period = keyof typeof statsData
+
+const periodLabels: Record<string, string> = {
+  Daily: 'Quotidien',
+  Weekly: 'Hebdomadaire',
+  Monthly: 'Mensuel',
+  Yearly: 'Annuel',
+}
 
 export function StatisticsPage() {
   const [period, setPeriod] = useState<Period>('Monthly')
   const data = statsData[period]
 
-  // highlight the last (current) period bar
   const activeIndex = data.length - 1
   const totalIncome = data.reduce((s, d) => s + d.income, 0)
   const totalExpenses = data.reduce((s, d) => s + d.expenses, 0)
@@ -33,7 +40,7 @@ export function StatisticsPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Statistiques"
-        subtitle="Analyse ton cash-flow selon plusieurs périodes"
+        subtitle="Analyse ton flux de trésorerie selon plusieurs périodes"
         action={
           <ToggleGroup
             value={[period]}
@@ -47,7 +54,7 @@ export function StatisticsPage() {
                 value={p}
                 className="rounded-lg px-3 text-xs aria-pressed:bg-neon aria-pressed:text-[#0a1a0c] data-[state=on]:bg-neon data-[state=on]:text-[#0a1a0c]"
               >
-                {p}
+                {periodLabels[p] ?? p}
               </ToggleGroupItem>
             ))}
           </ToggleGroup>
@@ -57,19 +64,24 @@ export function StatisticsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Total Revenu</p>
+            <p className="text-xs text-muted-foreground">Total revenus</p>
             <Money value={totalIncome} className="mt-1 block text-lg font-extrabold text-neon" />
           </CardContent>
         </Card>
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Total Depenses</p>
+            <p className="text-xs text-muted-foreground">Total dépenses</p>
             <Money value={totalExpenses} className="mt-1 block text-lg font-extrabold text-negative" />
           </CardContent>
         </Card>
         <Card className="backdrop-blur-xl">
           <CardContent>
-            <p className="text-xs text-muted-foreground">Epargne Nette</p>
+            <p className="text-xs text-muted-foreground">
+              <TermTooltip
+                term="Épargne nette"
+                definition="La différence entre ce que tu gagnes et ce que tu dépenses sur la période. C'est l'argent qui reste disponible pour épargner ou investir."
+              />
+            </p>
             <Money value={net} className="mt-1 block text-lg font-extrabold" colored />
           </CardContent>
         </Card>
@@ -78,7 +90,7 @@ export function StatisticsPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card className="backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>Expenses by {period.slice(0, -2) || period}</CardTitle>
+            <CardTitle>Dépenses par période</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64 w-full">
@@ -94,7 +106,7 @@ export function StatisticsPage() {
                     tickFormatter={(v) => formatFCFACompact(v as number)}
                   />
                   <Tooltip cursor={{ fill: 'rgba(255,255,255,0.04)' }} content={<ChartTooltip />} />
-                  <Bar dataKey="expenses" radius={[6, 6, 0, 0]}>
+                  <Bar dataKey="expenses" name="Dépenses" radius={[6, 6, 0, 0]}>
                     {data.map((_, i) => (
                       <Cell key={i} fill={i === activeIndex ? 'var(--neon)' : '#1C2B1E'} />
                     ))}
@@ -107,7 +119,7 @@ export function StatisticsPage() {
 
         <Card className="backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>Income vs Expenses</CardTitle>
+            <CardTitle>Revenus vs Dépenses</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64 w-full">
@@ -123,8 +135,8 @@ export function StatisticsPage() {
                     tickFormatter={(v) => formatFCFACompact(v as number)}
                   />
                   <Tooltip cursor={{ fill: 'rgba(255,255,255,0.04)' }} content={<ChartTooltip />} />
-                  <Bar dataKey="income" fill="var(--teal)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="expenses" fill="var(--gold)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="income" name="Revenus" fill="var(--teal)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="expenses" name="Dépenses" fill="var(--gold)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -134,7 +146,7 @@ export function StatisticsPage() {
 
       <Card className="backdrop-blur-xl">
         <CardHeader>
-          <CardTitle>Category Breakdown</CardTitle>
+          <CardTitle>Répartition par catégorie</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {categoryStats.map((c) => {
@@ -150,7 +162,7 @@ export function StatisticsPage() {
                 </div>
                 <StatBar percent={pct} color={over ? 'var(--negative)' : c.color} />
                 <span className={over ? 'text-xs text-negative' : 'text-xs text-muted-foreground'}>
-                  {formatPercent(pct, 0)} of budget{over ? ' — over budget' : ''}
+                  {formatPercent(pct, 0)} du budget{over ? ' — budget dépassé ⚠️' : ''}
                 </span>
               </div>
             )

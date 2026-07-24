@@ -5,7 +5,7 @@ import { Sidebar } from "@/components/growfi/sidebar"
 import { BottomNav } from "@/components/growfi/bottom-nav"
 import { Topbar } from "@/components/growfi/topbar"
 import type { IconName } from "@/components/growfi/icon"
-import type { ViewId } from "@/lib/data"
+
 
 export function AppShell({
   title,

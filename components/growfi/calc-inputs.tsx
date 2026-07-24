@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { Input } from '@/components/ui/input'
 import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
@@ -10,13 +11,13 @@ export function MoneyField({
   onChange,
   suffix = 'FCFA',
 }: {
-  label: string
+  label: ReactNode
   value: number
   onChange: (v: number) => void
   suffix?: string
 }) {
   return (
-    <label className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-1.5">
       <span className="text-xs font-medium text-muted-foreground">{label}</span>
       <div className="relative">
         <Input
@@ -30,7 +31,7 @@ export function MoneyField({
           {suffix}
         </span>
       </div>
-    </label>
+    </div>
   )
 }
 
@@ -43,7 +44,7 @@ export function SliderField({
   step = 1,
   unit,
 }: {
-  label: string
+  label: ReactNode
   value: number
   onChange: (v: number) => void
   min: number
@@ -75,12 +76,12 @@ export function RateField({
   value,
   onChange,
 }: {
-  label: string
+  label: ReactNode
   value: number
   onChange: (v: number) => void
 }) {
   return (
-    <label className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-1.5">
       <span className="text-xs font-medium text-muted-foreground">{label}</span>
       <div className="relative">
         <Input
@@ -95,7 +96,7 @@ export function RateField({
           %
         </span>
       </div>
-    </label>
+    </div>
   )
 }
 
@@ -105,7 +106,7 @@ export function ResultStat({
   accent,
   large,
 }: {
-  label: string
+  label: ReactNode
   value: string
   accent?: 'neon' | 'negative' | 'gold' | 'teal'
   large?: boolean

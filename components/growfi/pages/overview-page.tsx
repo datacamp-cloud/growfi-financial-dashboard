@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,7 +19,9 @@ import { TransactionsTable } from '../transactions-table'
 import { AccountRow } from '../account-card'
 import { PageHeader } from '../shared'
 
-export function OverviewPage({ onNavigate }: { onNavigate: (id: 'transactions' | 'accounts') => void }) {
+export function OverviewPage() {
+  const router = useRouter()
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
@@ -26,7 +29,6 @@ export function OverviewPage({ onNavigate }: { onNavigate: (id: 'transactions' |
         subtitle="Here's how your money is growing this month."
       />
 
-      {/* KPI row */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard label="Total Solde" value={formatFCFA(totalBalance)} icon="Wallet" trend={5.4} accent="neon" />
         <KpiCard label="Revenu Mensuel" value={formatFCFA(monthlyIncome)} icon="ArrowDownLeft" trend={3.1} accent="primary" />
@@ -36,7 +38,6 @@ export function OverviewPage({ onNavigate }: { onNavigate: (id: 'transactions' |
         </KpiCard>
       </div>
 
-      {/* Charts row */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="backdrop-blur-xl lg:col-span-2">
           <CardHeader>
@@ -56,12 +57,11 @@ export function OverviewPage({ onNavigate }: { onNavigate: (id: 'transactions' |
         </Card>
       </div>
 
-      {/* Transactions + accounts */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="backdrop-blur-xl lg:col-span-2">
           <CardHeader className="flex-row items-center justify-between">
             <CardTitle>Transactions recentes</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => onNavigate('transactions')}>
+            <Button variant="ghost" size="sm" onClick={() => router.push('/transactions')}>
               Voir tout
             </Button>
           </CardHeader>
@@ -72,7 +72,7 @@ export function OverviewPage({ onNavigate }: { onNavigate: (id: 'transactions' |
         <Card className="backdrop-blur-xl">
           <CardHeader className="flex-row items-center justify-between">
             <CardTitle>Comptes</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => onNavigate('accounts')}>
+            <Button variant="ghost" size="sm" onClick={() => router.push('/accounts')}>
               Gérer
             </Button>
           </CardHeader>

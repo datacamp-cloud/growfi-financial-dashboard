@@ -24,12 +24,12 @@ export function TermTooltip({
         <TooltipTrigger asChild>
           <span
             className={cn(
-              'inline-flex cursor-help items-center gap-1 border-b border-dashed border-muted-foreground/50 text-accent-foreground transition-colors hover:text-accent-foreground/80',
+              'inline-flex cursor-help items-center gap-1 border-b border-dashed border-muted-foreground/50 text-foreground',
               className,
             )}
           >
             {term}
-            <HelpCircle className="size-3 shrink-0 text-muted-foreground" />
+            <HelpCircle className="size-3 shrink-0 text-foreground" />
           </span>
         </TooltipTrigger>
         <TooltipContent

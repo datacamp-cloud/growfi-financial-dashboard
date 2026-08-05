@@ -4,5 +4,7 @@ overrides:
 
 # Autorisations pour l'exécution des scripts de build (postinstall, etc.)
 allowBuilds:
+  '@prisma/engines': true
   msw: true
+  prisma: true
   sharp: true

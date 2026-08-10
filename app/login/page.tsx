@@ -52,7 +52,7 @@ export default function LoginPage() {
         <div className="mb-8 flex flex-col items-center gap-3">
           <Logo />
           <p className="text-sm text-muted-foreground">
-            Faisons grandir ton patrimoine 🌱
+            Faisons grandir ton patrimoine
           </p>
         </div>
 
@@ -67,7 +67,7 @@ export default function LoginPage() {
               </label>
               <Input
                 type="email"
-                placeholder="toi@example.com"
+                placeholder="johndoe@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -109,7 +109,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="h-11 w-full bg-gradient-to-r from-primary to-teal font-semibold text-white shadow-lg shadow-primary/25 hover:opacity-90"
+              className="h-11 w-full bg-linear-to-r from-primary to-teal font-semibold text-white shadow-lg shadow-primary/25 hover:opacity-90"
             >
               {loading ? (
                 <Loader2 className="size-4 animate-spin" />

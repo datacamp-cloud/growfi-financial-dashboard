@@ -2,6 +2,8 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Inter, Roboto_Mono } from 'next/font/google'
 import './globals.css'
+import { Providers } from '@/components/providers'
+import { auth } from '@/auth'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const robotoMono = Roboto_Mono({ subsets: ['latin'], variable: '--font-roboto-mono' })
@@ -18,17 +20,19 @@ export const viewport: Viewport = {
   themeColor: '#060d09',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await auth()
+
   return (
     <html lang="fr" className={`dark bg-background ${inter.variable} ${robotoMono.variable}`}>
       <body className="antialiased">
-       <SessionProvider session={session}>
+       <Providers session={session}>
           {children}
-        </SessionProvider>
+        </Providers>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

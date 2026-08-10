@@ -6,10 +6,19 @@ import { Logo } from './logo'
 import { navItems } from './nav-items'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useRouter, usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 export function Sidebar() {
   const router = useRouter()
   const pathname = usePathname()
+  const { data: session } = useSession()
+  const name = session?.user?.name ?? ""
+  const initials = name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2)
 
   return (
     <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-sidebar-border bg-sidebar px-4 py-6 lg:flex">
@@ -46,11 +55,11 @@ export function Sidebar() {
       <div className="mt-auto flex items-center gap-3 rounded-xl border border-sidebar-border bg-white/[0.03] p-3">
         <Avatar className="size-9">
           <AvatarFallback className="bg-primary/20 text-sm font-semibold text-neon">
-            AK
+            {initials || "?"}
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold">Amara Koné</p>
+          <p className="truncate text-sm font-semibold">{name || "User"}</p>
           <p className="truncate text-xs text-muted-foreground">Premium member</p>
         </div>
       </div>

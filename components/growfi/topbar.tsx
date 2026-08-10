@@ -25,7 +25,7 @@ export function Topbar({ title, action }: { title: string; action?: { label: str
         <div>
           <h1 className="text-balance text-xl font-semibold tracking-tight md:text-2xl">{title}</h1>
           <p className="hidden text-sm text-muted-foreground md:block">
-            Bienvenue — faisons grandir ton patrimoine 🌱
+            Bienvenue — faisons grandir ton patrimoine
           </p>
         </div>
       </div>

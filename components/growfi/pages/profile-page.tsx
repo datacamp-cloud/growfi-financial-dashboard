@@ -1,5 +1,7 @@
 'use client'
-
+ 
+import { useEffect, useState } from 'react'
+import { useSession, signOut } from 'next-auth/react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -8,56 +10,59 @@ import { Separator } from '@/components/ui/separator'
 import { PageHeader } from '../shared'
 import { TermTooltip } from '../term-tooltip'
 import { Bell, CreditCard, Globe, Lock, LogOut, Moon, ShieldCheck } from 'lucide-react'
-
+ 
 const settings = [
-  { icon: Bell,       label: 'Notifications',       desc: 'Alertes push, email et dépassements de budget' },
-  { icon: Lock,       label: 'Sécurité',             desc: 'Mot de passe, double authentification et appareils' },
-  { icon: Globe,      label: 'Langue & région',      desc: 'Français · FCFA (XOF)' },
-  { icon: CreditCard, label: 'Moyens de paiement',   desc: 'Wave, Orange Money, cartes bancaires' },
-  { icon: Moon,       label: 'Apparence',            desc: 'Thème sombre' },
+  { icon: Bell,       label: 'Notifications',      desc: 'Alertes push, email et dépassements de budget' },
+  { icon: Lock,       label: 'Sécurité',            desc: 'Mot de passe, double authentification et appareils' },
+  { icon: Globe,      label: 'Langue & région',     desc: 'Français · FCFA (XOF)' },
+  { icon: CreditCard, label: 'Moyens de paiement',  desc: 'Wave, Orange Money, cartes bancaires' },
+  { icon: Moon,       label: 'Apparence',           desc: 'Thème sombre' },
 ]
-
+ 
 export function ProfilePage() {
+  const { data: session } = useSession()
+  const [goalsCount, setGoalsCount] = useState(0)
+ 
+  const name = session?.user?.name ?? ''
+  const email = session?.user?.email ?? ''
+  const initials = name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+ 
+  useEffect(() => {
+    fetch('/api/goals')
+      .then((r) => r.json())
+      .then((data) => setGoalsCount(Array.isArray(data) ? data.length : 0))
+  }, [])
+ 
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title="Profil" subtitle="Gérez votre compte et vos préférences." />
-
+ 
       <Card className="backdrop-blur-xl">
         <CardContent className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
           <Avatar className="size-20">
-            <AvatarFallback className="bg-primary/20 text-2xl font-bold text-neon">AK</AvatarFallback>
+            <AvatarFallback className="bg-primary/20 text-2xl font-bold text-neon">
+              {initials || '?'}
+            </AvatarFallback>
           </Avatar>
           <div className="flex-1">
             <div className="flex flex-col items-center gap-2 sm:flex-row">
-              <h2 className="text-xl font-bold">Amara Koné</h2>
+              <h2 className="text-xl font-bold">{name}</h2>
               <Badge className="bg-gold/15 text-gold">
-                <ShieldCheck data-icon="inline-start" />
+                <ShieldCheck className="mr-1 size-3" />
                 Premium
               </Badge>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">amara.kone@growfi.africa</p>
-            <p className="text-xs text-muted-foreground">Membre depuis mars 2024 · Dakar, Sénégal</p>
+            <p className="mt-1 text-sm text-muted-foreground">{email}</p>
           </div>
           <Button variant="outline">Modifier</Button>
         </CardContent>
       </Card>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card className="backdrop-blur-xl">
-          <CardContent>
-            <p className="text-xs text-muted-foreground">
-              <TermTooltip
-                term="Score de crédit"
-                definition="Une note (généralement entre 300 et 850) qui mesure ta fiabilité en tant qu'emprunteur. Plus le score est élevé, plus il est facile d'obtenir un prêt à un bon taux."
-              />
-            </p>
-            <p className="mt-1 font-mono text-2xl font-extrabold text-neon">742</p>
-          </CardContent>
-        </Card>
+ 
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Card className="backdrop-blur-xl">
           <CardContent>
             <p className="text-xs text-muted-foreground">Objectifs actifs</p>
-            <p className="mt-1 font-mono text-2xl font-extrabold">4</p>
+            <p className="mt-1 font-mono text-2xl font-extrabold text-neon">{goalsCount}</p>
           </CardContent>
         </Card>
         <Card className="backdrop-blur-xl">
@@ -68,11 +73,11 @@ export function ProfilePage() {
                 definition="Le nombre de mois consécutifs où tu as atteint ton objectif d'épargne. Une longue série est signe d'une excellente discipline financière !"
               />
             </p>
-            <p className="mt-1 font-mono text-2xl font-extrabold text-gold">18 mois</p>
+            <p className="mt-1 font-mono text-2xl font-extrabold text-gold">— mois</p>
           </CardContent>
         </Card>
       </div>
-
+ 
       <Card className="backdrop-blur-xl">
         <CardHeader>
           <CardTitle>Paramètres</CardTitle>
@@ -97,9 +102,13 @@ export function ProfilePage() {
           ))}
         </CardContent>
       </Card>
-
-      <Button variant="destructive" className="w-full sm:w-auto">
-        <LogOut data-icon="inline-start" />
+ 
+      <Button
+        variant="destructive"
+        className="w-full sm:w-auto"
+        onClick={() => signOut({ callbackUrl: '/login' })}
+      >
+        <LogOut className="mr-2 size-4" />
         Se déconnecter
       </Button>
     </div>

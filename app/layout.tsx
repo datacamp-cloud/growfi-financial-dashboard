@@ -24,9 +24,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`dark bg-background ${inter.variable} ${robotoMono.variable}`}>
+    <html lang="fr" className={`dark bg-background ${inter.variable} ${robotoMono.variable}`}>
       <body className="antialiased">
-        {children}
+       <SessionProvider session={session}>
+          {children}
+        </SessionProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

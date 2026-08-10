@@ -57,7 +57,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-border bg-white/[0.03] p-8 backdrop-blur-xl">
+        <div className="rounded-2xl border border-border bg-white/3 p-8 backdrop-blur-xl">
           <h1 className="mb-6 text-xl font-bold">Connexion</h1>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">

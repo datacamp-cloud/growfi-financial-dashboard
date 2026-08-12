@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator'
 import { PageHeader } from '../shared'
 import { TermTooltip } from '../term-tooltip'
 import { Bell, CreditCard, Globe, Lock, LogOut, Moon, ShieldCheck } from 'lucide-react'
+import { EditProfileModal } from '../modals/edit-profile-modal'
  
 const settings = [
   { icon: Bell,       label: 'Notifications',      desc: 'Alertes push, email et dépassements de budget' },
@@ -22,16 +23,24 @@ const settings = [
 export function ProfilePage() {
   const { data: session } = useSession()
   const [goalsCount, setGoalsCount] = useState(0)
+  const [profile, setProfile] = useState<any>(null)
+  const [showEditModal, setShowEditModal] = useState(false)
  
   const name = session?.user?.name ?? ''
   const email = session?.user?.email ?? ''
   const initials = name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
  
+  // useEffect(() => {
+  //   fetch('/api/goals')
+  //     .then((r) => r.json())
+  //     .then((data) => setGoalsCount(Array.isArray(data) ? data.length : 0))
+  // }, [])
   useEffect(() => {
-    fetch('/api/goals')
+    fetch('/api/user/profile')
       .then((r) => r.json())
-      .then((data) => setGoalsCount(Array.isArray(data) ? data.length : 0))
+      .then(setProfile)
   }, [])
+  
  
   return (
     <div className="flex flex-col gap-6">
@@ -53,10 +62,29 @@ export function ProfilePage() {
               </Badge>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">{email}</p>
+            <h2 className="text-xl font-bold">{profile?.name ?? session?.user?.name}</h2>
+            <p className="text-sm text-muted-foreground">{profile?.profession} · {profile?.activity}</p>
+            <p className="text-xs text-muted-foreground">{profile?.age} ans</p>
           </div>
-          <Button variant="outline">Modifier</Button>
+          <Button variant="outline" onClick={() => setShowEditModal(true)}>
+            Modifier
+          </Button>
         </CardContent>
       </Card>
+
+      {showEditModal && profile && (
+        <EditProfileModal
+          initial={{
+            name: profile.name ?? '',
+            profession: profile.profession ?? '',
+            activity: profile.activity ?? '',
+            age: profile.age?.toString() ?? '',
+            globalGoal: profile.globalGoal ?? '',
+          }}
+          onClose={() => setShowEditModal(false)}
+          onSuccess={(data) => { setProfile(data); setShowEditModal(false) }}
+        />
+      )}
  
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Card className="backdrop-blur-xl">

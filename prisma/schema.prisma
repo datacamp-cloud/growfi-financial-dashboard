@@ -12,8 +12,13 @@ model User {
   email        String   @unique
   passwordHash String
   avatar       String?
+  profession   String?  // "employe" | "etudiant" | "entrepreneur" | "freelance" | "retraite"
+  activity     String?  // description de l'activité
+  age          Int?
+  globalGoal   String?  // objectif global en texte libre
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  
 
   accounts     Account[]
   transactions Transaction[]

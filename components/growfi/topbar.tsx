@@ -6,7 +6,7 @@ import { Icon, type IconName } from "@/components/growfi/icon"
 import { Logo } from "@/components/growfi/logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
-export function Topbar({ title, action }: { title: string; action?: { label: string; icon?: IconName } }) {
+export function Topbar({ title, action, onAdd }: { title: string; action?: { label: string; icon?: IconName }; onAdd: () => void }) {
   const { data: session } = useSession()
   const name = session?.user?.name ?? ""
   const initials = name

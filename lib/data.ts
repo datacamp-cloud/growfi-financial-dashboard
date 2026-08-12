@@ -127,7 +127,12 @@ export const statsData = {
 }
 
 export const categoryStats = [
-  { name: 'Food & Groceries', spent: 245_000, budget: 300_000, color: 'var(--neon)' },
+  { 
+    name: 'Food & Groceries', 
+    spent: 245_000, 
+    budget: 300_000, 
+    color: 'var(--neon)' 
+  },
   { name: 'Transport', spent: 168_000, budget: 150_000, color: 'var(--teal)' },
   { name: 'Rent', spent: 210_000, budget: 210_000, color: 'var(--primary)' },
   { name: 'Entertainment', spent: 95_500, budget: 120_000, color: 'var(--gold)' },

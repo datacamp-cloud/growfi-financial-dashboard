@@ -33,6 +33,7 @@ export function Topbar({ title, action, onAdd }: { title: string; action?: { lab
         {action && (
           <button
             type="button"
+            onClick={onAdd}
             className="hidden items-center gap-2 rounded-xl bg-neon px-4 py-2 text-sm font-semibold text-[#0a1a0c] transition hover:brightness-110 sm:inline-flex"
           >
             {action.icon ? <Icon name={action.icon} className="size-4" /> : null}

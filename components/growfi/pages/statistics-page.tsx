@@ -16,6 +16,7 @@ import { formatFCFA, formatFCFACompact, formatPercent } from '@/lib/format'
 import { ChartTooltip, Money, PageHeader, StatBar } from '../shared'
 import { TermTooltip } from '../term-tooltip'
 import { Loader2 } from 'lucide-react'
+import { set } from 'zod'
 
 type Period = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly'
 
@@ -85,11 +86,12 @@ export function StatisticsPage() {
           <ToggleGroup
             type="single" // Ajout de type="single" obligatoire pour ToggleGroup
             value={[period] as string[]}
-            onValueChange={(value) => 
-                if (value && value.length > 0) {
+            onValueChange={(value) => {
+              // value est un tableau de chaînes sélectionnées
+              if (value && value.length > 0) {
                 setPeriod(value[0] as Period)
               }
-            }
+            }}
             className="rounded-xl border border-border bg-white/5 p-1"
           >
             {(Object.keys(periodLabels) as Period[]).map((p) => (

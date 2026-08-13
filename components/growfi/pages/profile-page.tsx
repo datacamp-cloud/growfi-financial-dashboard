@@ -29,6 +29,10 @@ export function ProfilePage() {
   const name = session?.user?.name ?? ''
   const email = session?.user?.email ?? ''
   const initials = name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+  const avatarUrl = session?.user?.image ?? ''
+  const profession = session?.user?.profession ?? ''
+  const activity = session?.user?.activity ?? ''
+  const age = session?.user?.age ?? ''
  
   // useEffect(() => {
   //   fetch('/api/goals')
@@ -62,9 +66,8 @@ export function ProfilePage() {
               </Badge>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">{email}</p>
-            <h2 className="text-xl font-bold">{profile?.name ?? session?.user?.name}</h2>
-            <p className="text-sm text-muted-foreground">{profile?.profession} · {profile?.activity}</p>
-            <p className="text-xs text-muted-foreground">{profile?.age} ans</p>
+            <p className="text-sm text-muted-foreground">{profession} · {activity}</p>
+            <p className="text-xs text-muted-foreground">{age} ans</p>
           </div>
           <Button variant="outline" onClick={() => setShowEditModal(true)}>
             Modifier

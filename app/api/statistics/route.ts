@@ -10,7 +10,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const period = searchParams.get("period") ?? "Monthly"
   const now = new Date()
-  let intervals: { label: string; start: Date; end: Date }[] = []
+  const intervals: { label: string; start: Date; end: Date }[] = []
 
   if (period === "Daily") {
     for (let i = 6; i >= 0; i--) {

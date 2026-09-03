@@ -1,49 +1,52 @@
-'use client'
+"use client";
 
-import { useEffect, useMemo, useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Icon } from '../icon'
-import { Money, PageHeader, StatBar } from '../shared'
-import { Loader2 } from 'lucide-react'
+import { useEffect, useMemo, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Icon } from "../icon";
+import { Money, PageHeader, StatBar } from "../shared";
+import { Loader2 } from "lucide-react";
 
 type Account = {
-  id: string
-  name: string
-  type: string
-  balance: number
-  icon: string
-  color: string
-}
+  id: string;
+  name: string;
+  type: string;
+  balance: number;
+  icon: string;
+  color: string;
+};
 
 export function AccountsPage() {
-  const [accounts, setAccounts] = useState<Account[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchAccounts() {
       try {
-        setLoading(true)
-        setError(null)
-        const res = await fetch('/api/accounts')
-        if (!res.ok) throw new Error('Impossible de charger les comptes')
-        const data = await res.json()
-        if (!Array.isArray(data)) throw new Error('Réponse serveur invalide')
-        setAccounts(data)
+        setLoading(true);
+        setError(null);
+        const res = await fetch("/api/accounts");
+        if (!res.ok) throw new Error("Impossible de charger les comptes");
+        const data = await res.json();
+        if (!Array.isArray(data)) throw new Error("Réponse serveur invalide");
+        setAccounts(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue')
+        setError(
+          err instanceof Error ? err.message : "Une erreur est survenue",
+        );
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchAccounts()
-  }, [])
+    fetchAccounts();
+  }, []);
 
   const totalBalance = useMemo(
-    () => accounts.reduce((sum, account) => sum + Number(account.balance || 0), 0),
+    () =>
+      accounts.reduce((sum, account) => sum + Number(account.balance || 0), 0),
     [accounts],
-  )
+  );
 
   return (
     <div className="flex flex-col gap-6">
@@ -59,10 +62,16 @@ export function AccountsPage() {
 
       <Card className="overflow-hidden border-0 bg-linear-to-br from-primary/20 via-card to-teal/10 backdrop-blur-xl ring-1 ring-neon/20">
         <CardContent className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-muted-foreground">Solde total</span>
-          <Money value={totalBalance} className="text-3xl font-extrabold sm:text-4xl" />
+          <span className="text-xs font-medium text-muted-foreground">
+            Solde total
+          </span>
+          <Money
+            value={totalBalance}
+            className="text-3xl font-extrabold sm:text-4xl"
+          />
           <p className="mt-2 text-xs text-muted-foreground">
-            {accounts.length} compte{accounts.length > 1 ? 's' : ''} connecté{accounts.length > 1 ? 's' : ''}
+            {accounts.length} compte{accounts.length > 1 ? "s" : ""} connecté
+            {accounts.length > 1 ? "s" : ""}
           </p>
         </CardContent>
       </Card>
@@ -78,9 +87,10 @@ export function AccountsPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {accounts.map((account) => {
-            const share = totalBalance > 0
-              ? Math.round((account.balance / totalBalance) * 100)
-              : 0
+            const share =
+              totalBalance > 0
+                ? Math.round((account.balance / totalBalance) * 100)
+                : 0;
 
             return (
               <Card key={account.id} className="backdrop-blur-xl">
@@ -97,17 +107,23 @@ export function AccountsPage() {
                     </span>
                     <div className="flex-1">
                       <p className="font-semibold">{account.name}</p>
-                      <p className="text-xs text-muted-foreground">{account.type} · {share}% du total</p>
+                      <p className="text-xs text-muted-foreground">
+                        {account.type} · {share}% du total
+                      </p>
                     </div>
                   </div>
-                  <Money value={account.balance} className="text-xl font-extrabold" suffix={false} />
+                  <Money
+                    value={account.balance}
+                    className="text-xl font-extrabold"
+                    suffix={false}
+                  />
                   <StatBar percent={share} color={account.color} />
                 </CardContent>
               </Card>
-            )
+            );
           })}
         </div>
       )}
     </div>
-  )
+  );
 }

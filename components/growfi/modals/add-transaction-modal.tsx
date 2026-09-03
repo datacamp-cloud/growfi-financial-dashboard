@@ -19,7 +19,6 @@ export function AddTransactionModal({ onClose, onSuccess }: { onClose: () => voi
   const [relatedAccountId, setRelatedAccountId] = useState('')
   const [category, setCategory] = useState('Alimentation')
   const [description, setDescription] = useState('')
-  const [note, setNote] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -50,7 +49,7 @@ export function AddTransactionModal({ onClose, onSuccess }: { onClose: () => voi
     const res = await fetch('/api/transactions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: parseFloat(amount), type, accountId, relatedAccountId: type === 'transfer' ? relatedAccountId : null, category, description, note, date }),
+      body: JSON.stringify({ amount: parseFloat(amount), type, accountId, relatedAccountId: type === 'transfer' ? relatedAccountId : null, category, description, date }),
     })
 
     setLoading(false)
@@ -68,7 +67,7 @@ export function AddTransactionModal({ onClose, onSuccess }: { onClose: () => voi
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold">Nouvelle transaction</h2>
-            <p className="mt-1 text-xs text-muted-foreground">Enregistre un mouvement d'argent.</p>
+            <p className="mt-1 text-xs text-muted-foreground">Enregistre un mouvement d’argent.</p>
           </div>
           <button type="button" onClick={onClose} className="grid size-8 place-items-center rounded-lg text-muted-foreground hover:text-foreground"><X className="size-5" /></button>
         </div>

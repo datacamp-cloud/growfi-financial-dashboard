@@ -6,12 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { KpiCard, CircularProgress } from "../kpi-card"
 import { SpendingEvolutionChart, ExpenseDonutChart } from "../overview-charts"
-import { TransactionsTable } from "../transactions-table"
-import { AccountRow } from "../account-card"
+import { TransactionsTable, type ApiTransaction } from "../transactions-table"
+import { AccountRow, type AccountRowData } from "../account-card"
 import { PageHeader } from "../shared"
 import { formatFCFA } from "@/lib/format"
 import { Loader2 } from "lucide-react"
 
+type GoalSummary = { id: string; name: string; targetAmount: number; currentAmount: number }
 type DashboardData = {
   user: { name: string; email: string }
   totalBalance: number
@@ -19,9 +20,9 @@ type DashboardData = {
   monthlyExpenses: number
   remainingAmount: number
   remainingRate: number
-  accounts: any[]
-  recentTransactions: any[]
-  goals: any[]
+  accounts: AccountRowData[]
+  recentTransactions: ApiTransaction[]
+  goals: GoalSummary[]
 }
 
 export function OverviewPage() {
@@ -35,7 +36,7 @@ export function OverviewPage() {
         if (!r.ok) throw new Error("Impossible de charger le tableau de bord")
         return r.json()
       })
-      .then((d) => { setData(d); setLoading(false) })
+      .then((d: DashboardData) => { setData(d); setLoading(false) })
       .catch(() => setLoading(false))
   }, [])
 
@@ -46,39 +47,20 @@ export function OverviewPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title={`Bienvenue, ${firstName}`} subtitle="Voici l'évolution de tes finances ce mois-ci." />
-
+      <PageHeader title={`Bienvenue, ${firstName}`} subtitle="Voici l’évolution de tes finances ce mois-ci." />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard label="Solde total" value={formatFCFA(data?.totalBalance ?? 0)} icon="Wallet" accent="neon" />
         <KpiCard label="Revenus du mois" value={formatFCFA(data?.monthlyIncome ?? 0)} icon="ArrowDownLeft" accent="primary" />
         <KpiCard label="Dépenses du mois" value={formatFCFA(data?.monthlyExpenses ?? 0)} icon="ArrowUpRight" accent="negative" />
-        <KpiCard label="Reste après dépenses" value={formatFCFA(data?.remainingAmount ?? 0)} icon="TrendingUp" accent="gold">
-          <CircularProgress value={remainingRate} />
-        </KpiCard>
+        <KpiCard label="Reste après dépenses" value={formatFCFA(data?.remainingAmount ?? 0)} icon="TrendingUp" accent="gold"><CircularProgress value={remainingRate} /></KpiCard>
       </div>
-
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="backdrop-blur-xl lg:col-span-2">
-          <CardHeader><CardTitle>Revenus et dépenses</CardTitle></CardHeader>
-          <CardContent><SpendingEvolutionChart /></CardContent>
-        </Card>
-        <Card className="backdrop-blur-xl">
-          <CardHeader><CardTitle>Répartition des dépenses</CardTitle></CardHeader>
-          <CardContent><ExpenseDonutChart /></CardContent>
-        </Card>
+        <Card className="backdrop-blur-xl lg:col-span-2"><CardHeader><CardTitle>Revenus et dépenses</CardTitle></CardHeader><CardContent><SpendingEvolutionChart /></CardContent></Card>
+        <Card className="backdrop-blur-xl"><CardHeader><CardTitle>Répartition des dépenses</CardTitle></CardHeader><CardContent><ExpenseDonutChart /></CardContent></Card>
       </div>
-
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="backdrop-blur-xl lg:col-span-2">
-          <CardHeader className="flex-row items-center justify-between"><CardTitle>Transactions récentes</CardTitle><Button variant="ghost" size="sm" onClick={() => router.push("/transactions")}>Voir tout</Button></CardHeader>
-          <CardContent><TransactionsTable items={data?.recentTransactions ?? []} /></CardContent>
-        </Card>
-        <Card className="backdrop-blur-xl">
-          <CardHeader className="flex-row items-center justify-between"><CardTitle>Comptes</CardTitle><Button variant="ghost" size="sm" onClick={() => router.push("/accounts")}>Gérer</Button></CardHeader>
-          <CardContent className="flex flex-col gap-2.5">
-            {data?.accounts?.length ? data.accounts.map((a: any) => <AccountRow key={a.id} account={a} />) : <p className="text-sm text-muted-foreground">Aucun compte pour l'instant.</p>}
-          </CardContent>
-        </Card>
+        <Card className="backdrop-blur-xl lg:col-span-2"><CardHeader className="flex-row items-center justify-between"><CardTitle>Transactions récentes</CardTitle><Button variant="ghost" size="sm" onClick={() => router.push("/transactions")}>Voir tout</Button></CardHeader><CardContent><TransactionsTable items={data?.recentTransactions ?? []} /></CardContent></Card>
+        <Card className="backdrop-blur-xl"><CardHeader className="flex-row items-center justify-between"><CardTitle>Comptes</CardTitle><Button variant="ghost" size="sm" onClick={() => router.push("/accounts")}>Gérer</Button></CardHeader><CardContent className="flex flex-col gap-2.5">{data?.accounts?.length ? data.accounts.map((account) => <AccountRow key={account.id} account={account} />) : <p className="text-sm text-muted-foreground">Aucun compte pour l’instant.</p>}</CardContent></Card>
       </div>
     </div>
   )

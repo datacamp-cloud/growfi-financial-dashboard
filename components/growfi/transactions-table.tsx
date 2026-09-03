@@ -1,15 +1,7 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Icon } from './icon'
 import { Money } from './shared'
 
-// 1. Déclaration du type local calqué sur le retour de votre API Prisma
 export type ApiTransaction = {
   id: string
   amount: number
@@ -20,10 +12,8 @@ export type ApiTransaction = {
   date: string
   source: string
   accountId: string
-  account?: {
-    name: string
-    icon: string | null
-  }
+  relatedAccountId?: string | null
+  account?: { name: string; icon: string | null }
 }
 
 function formatDate(iso: string) {
@@ -44,15 +34,14 @@ export function TransactionsTable({ items }: { items: ApiTransaction[] }) {
         </TableHeader>
         <TableBody>
           {items.map((t) => {
-            // Extraction sécurisée des données de la relation compte de Prisma
             const accountName = t.account?.name ?? 'Inconnu'
-            const accountIcon = (t.account?.icon as any) ?? 'Wallet' // 'Wallet' ou autre icône par défaut si null
+            const accountIcon = t.account?.icon ?? 'Wallet'
+            const isTransfer = t.type === 'transfer'
+            const displayAmount = isTransfer ? Math.abs(t.amount) : t.amount
 
             return (
               <TableRow key={t.id} className="border-border/60">
-                <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
-                  {formatDate(t.date)}
-                </TableCell>
+                <TableCell className="whitespace-nowrap text-xs text-muted-foreground">{formatDate(t.date)}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2.5">
                     <span className="flex size-8 items-center justify-center rounded-lg bg-white/5 text-muted-foreground">
@@ -60,20 +49,22 @@ export function TransactionsTable({ items }: { items: ApiTransaction[] }) {
                     </span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{t.description || t.category}</p>
-                      <p className="text-xs text-muted-foreground sm:hidden">{accountName}</p>
+                      <p className="text-xs text-muted-foreground sm:hidden">
+                        {isTransfer ? `${accountName} · Transfert` : accountName}
+                      </p>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">
-                  {accountName}
+                  {isTransfer ? `${accountName} · Transfert` : accountName}
                 </TableCell>
                 <TableCell className="text-right">
-                  <Money 
-                    value={t.amount} 
-                    colored 
-                    signed 
-                    className="text-sm font-semibold" 
-                    suffix={false} 
+                  <Money
+                    value={displayAmount}
+                    colored={!isTransfer}
+                    signed={!isTransfer}
+                    className="text-sm font-semibold"
+                    suffix={false}
                   />
                 </TableCell>
               </TableRow>

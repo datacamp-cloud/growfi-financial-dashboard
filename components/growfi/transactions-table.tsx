@@ -12,9 +12,11 @@ export type ApiTransaction = {
   date: string
   source: string
   accountId: string
+  goalId?: string | null
   relatedAccountId?: string | null
   account?: { name: string; icon: string | null }
   relatedAccount?: { name: string; icon: string | null } | null
+  goal?: { name: string } | null
 }
 
 function formatDate(iso: string) {
@@ -37,7 +39,7 @@ export function TransactionsTable({ items }: { items: ApiTransaction[] }) {
           {items.map((t) => {
             const accountName = t.account?.name ?? 'Inconnu'
             const accountIcon = t.account?.icon ?? 'Wallet'
-            const destinationName = t.relatedAccount?.name ?? 'Compte destination'
+            const destination = t.goalId ? `Objectif : ${t.goal?.name ?? 'Objectif'}` : `Compte : ${t.relatedAccount?.name ?? 'destination'}`
             const isTransfer = t.type === 'transfer'
             const displayAmount = Math.abs(t.amount)
 
@@ -46,29 +48,15 @@ export function TransactionsTable({ items }: { items: ApiTransaction[] }) {
                 <TableCell className="whitespace-nowrap text-xs text-muted-foreground">{formatDate(t.date)}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2.5">
-                    <span className="flex size-8 items-center justify-center rounded-lg bg-white/5 text-muted-foreground">
-                      <Icon name={accountIcon} className="size-4" />
-                    </span>
+                    <span className="flex size-8 items-center justify-center rounded-lg bg-white/5 text-muted-foreground"><Icon name={accountIcon} className="size-4" /></span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{t.description || t.category}</p>
-                      <p className="text-xs text-muted-foreground sm:hidden">
-                        {isTransfer ? `${accountName} → ${destinationName}` : accountName}
-                      </p>
+                      <p className="text-xs text-muted-foreground sm:hidden">{isTransfer ? `${accountName} → ${destination}` : accountName}</p>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">
-                  {isTransfer ? `${accountName} → ${destinationName}` : accountName}
-                </TableCell>
-                <TableCell className="text-right">
-                  <Money
-                    value={displayAmount}
-                    colored={!isTransfer}
-                    signed={!isTransfer}
-                    className="text-sm font-semibold"
-                    suffix={false}
-                  />
-                </TableCell>
+                <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">{isTransfer ? `${accountName} → ${destination}` : accountName}</TableCell>
+                <TableCell className="text-right"><Money value={displayAmount} colored={!isTransfer} signed={!isTransfer} className="text-sm font-semibold" suffix={false} /></TableCell>
               </TableRow>
             )
           })}

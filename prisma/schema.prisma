@@ -45,7 +45,6 @@ model Account {
 
   user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions      Transaction[] @relation("sourceAccount")
-  outgoingTransfers Transaction[] @relation("sourceAccount")
   incomingTransfers Transaction[] @relation("destinationAccount")
 }
 

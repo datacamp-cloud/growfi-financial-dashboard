@@ -12,13 +12,12 @@ model User {
   email        String   @unique
   passwordHash String
   avatar       String?
-  profession   String?  // "employe" | "etudiant" | "entrepreneur" | "freelance" | "retraite"
-  activity     String?  // description de l'activité
+  profession   String?
+  activity     String?
   age          Int?
-  globalGoal   String?  // objectif global en texte libre
+  globalGoal   String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  
 
   accounts     Account[]
   transactions Transaction[]
@@ -44,25 +43,33 @@ model Account {
   color     String   @default("#4CAF50")
   createdAt DateTime @default(now())
 
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions Transaction[]
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions      Transaction[] @relation("sourceAccount")
+  incomingTransfers Transaction[] @relation("destinationAccount")
 }
 
 model Transaction {
-  id          String   @id @default(cuid())
-  userId      String
-  accountId   String
-  amount      Float
-  type        String   // "income" | "expense"
-  category    String
-  description String?
-  note        String?
-  date        DateTime @default(now())
-  source      String   @default("manual") // "manual" | "wave" | "orange" | "mtn"
-  createdAt   DateTime @default(now())
+  id               String   @id @default(cuid())
+  userId           String
+  accountId        String
+  relatedAccountId String?
+  goalId           String?
+  amount           Float
+  type             String   // "income" | "expense" | "transfer"
+  category         String
+  description      String?
+  note             String?
+  date             DateTime @default(now())
+  source           String   @default("manual") // "manual" | "wave" | "orange" | "mtn"
+  createdAt        DateTime @default(now())
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account        Account  @relation("sourceAccount", fields: [accountId], references: [id], onDelete: Cascade)
+  relatedAccount Account? @relation("destinationAccount", fields: [relatedAccountId], references: [id], onDelete: SetNull)
+  goal           Goal?    @relation(fields: [goalId], references: [id], onDelete: SetNull)
+
+  @@index([relatedAccountId])
+  @@index([goalId])
 }
 
 model Goal {
@@ -77,5 +84,6 @@ model Goal {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
 }

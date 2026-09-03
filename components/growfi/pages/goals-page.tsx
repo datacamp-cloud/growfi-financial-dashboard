@@ -26,6 +26,7 @@ export function GoalsPage() {
   const [note, setNote] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [today] = useState(() => Date.now())
 
   async function fetchGoals() {
     try {
@@ -52,7 +53,7 @@ export function GoalsPage() {
 
   function daysRemaining(deadline: string | null) {
     if (!deadline) return null
-    const diff = Math.ceil((new Date(deadline).getTime() - Date.now()) / 86400000)
+    const diff = Math.ceil((new Date(deadline).getTime() - today) / 86400000)
     return diff > 0 ? `${diff} jours restants` : 'Échéance dépassée'
   }
 
@@ -72,7 +73,7 @@ export function GoalsPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title="Objectifs" subtitle="Chaque contribution est enregistrée comme une transaction liée à l’objectif." action={<Button onClick={() => setShowModal(true)} className="bg-gradient-to-r from-primary to-teal text-primary-foreground"><Plus className="mr-2 size-4" />Nouvel objectif</Button>} />
-      {loading ? <div className="flex h-48 items-center justify-center"><Loader2 className="size-8 animate-spin text-neon" /></div> : goals.length === 0 ? <div className="flex h-48 flex-col items-center justify-center gap-3 text-muted-foreground"><p>Aucun objectif pour l'instant.</p><Button variant="outline" onClick={() => setShowModal(true)}>Créer mon premier objectif</Button></div> : <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {loading ? <div className="flex h-48 items-center justify-center"><Loader2 className="size-8 animate-spin text-neon" /></div> : goals.length === 0 ? <div className="flex h-48 flex-col items-center justify-center gap-3 text-muted-foreground"><p>Aucun objectif pour l’instant.</p><Button variant="outline" onClick={() => setShowModal(true)}>Créer mon premier objectif</Button></div> : <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {goals.map((g) => { const pct = g.targetAmount > 0 ? Math.min(100, Math.round((g.currentAmount / g.targetAmount) * 100)) : 0; return <button key={g.id} type="button" onClick={() => openGoal(g)} className="rounded-2xl text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-neon"><Card className="h-full backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:ring-1 hover:ring-neon/40"><CardContent className="flex flex-col gap-4"><div className="flex items-start justify-between"><span className="flex size-11 items-center justify-center rounded-xl" style={{ backgroundColor: `color-mix(in srgb, ${g.color} 15%, transparent)`, color: g.color }}><Icon name={g.icon} className="size-5" /></span><span className="rounded-full px-2 py-0.5 text-xs font-bold" style={{ backgroundColor: `color-mix(in srgb, ${g.color} 15%, transparent)`, color: g.color }}>{pct >= 100 ? 'Atteint' : `${pct}%`}</span></div><div><h3 className="font-semibold">{g.name}</h3>{daysRemaining(g.deadline) && <p className="text-xs text-muted-foreground">{daysRemaining(g.deadline)}</p>}</div><div className="flex flex-col gap-2"><div className="flex items-baseline justify-between"><Money value={g.currentAmount} suffix={false} className="text-base font-extrabold" /><span className="text-xs text-muted-foreground">/ {formatFCFA(g.targetAmount, false)}</span></div><StatBar percent={pct} color={g.color} /><p className="text-[11px] text-muted-foreground">Cliquer pour voir les contributions et ajouter de l’argent.</p></div></CardContent></Card></button> })}
       </div>}
       {showModal && <AddGoalModal onClose={() => setShowModal(false)} onSuccess={() => { setShowModal(false); fetchGoals() }} />}

@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { transactionSchema } from "@/lib/validation/transaction"
 
 export async function GET(req: Request) {
   const session = await auth()
   if (!session?.user?.id) return NextResponse.json({ error: "Non autorisé" }, { status: 401 })
 
   const { searchParams } = new URL(req.url)
-  const limit = Number(searchParams.get("limit") ?? 50)
+  const rawLimit = Number(searchParams.get("limit") ?? 50)
+  const limit = Number.isFinite(rawLimit) ? Math.min(Math.max(Math.floor(rawLimit), 1), 100) : 50
 
   const transactions = await prisma.transaction.findMany({
     where: { userId: session.user.id },
@@ -23,32 +25,62 @@ export async function POST(req: Request) {
   const session = await auth()
   if (!session?.user?.id) return NextResponse.json({ error: "Non autorisé" }, { status: 401 })
 
-  const body = await req.json()
+  let body: unknown
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: "Corps de requête invalide" }, { status: 400 })
+  }
+
+  const parsed = transactionSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Données de transaction invalides", details: parsed.error.flatten() },
+      { status: 400 },
+    )
+  }
+
+  const data = parsed.data
   const userId = session.user.id
 
-  const transaction = await prisma.transaction.create({
-    data: {
-      userId,
-      accountId: body.accountId,
-      amount: body.amount,
-      type: body.type,
-      category: body.category,
-      description: body.description ?? "",
-      note: body.note ?? "",
-      date: body.date ? new Date(body.date) : new Date(),
-      source: body.source ?? "manual",
-    },
+  const account = await prisma.account.findFirst({
+    where: { id: data.accountId, userId },
+    select: { id: true },
   })
 
-  // Mettre à jour le solde du compte
-  await prisma.account.update({
-    where: { id: body.accountId },
-    data: {
-      balance: {
-        increment: body.type === "income" ? body.amount : -body.amount,
-      },
-    },
-  })
+  if (!account) return NextResponse.json({ error: "Compte introuvable" }, { status: 404 })
 
-  return NextResponse.json(transaction, { status: 201 })
+  try {
+    const transaction = await prisma.$transaction(async (tx) => {
+      const created = await tx.transaction.create({
+        data: {
+          userId,
+          accountId: data.accountId,
+          amount: data.amount,
+          type: data.type,
+          category: data.category,
+          description: data.description ?? "",
+          note: data.note ?? "",
+          date: data.date ?? new Date(),
+          source: data.source,
+        },
+      })
+
+      await tx.account.update({
+        where: { id: data.accountId },
+        data: {
+          balance: {
+            increment: data.type === "income" ? data.amount : -data.amount,
+          },
+        },
+      })
+
+      return created
+    })
+
+    return NextResponse.json(transaction, { status: 201 })
+  } catch (error) {
+    console.error("Erreur lors de la création de la transaction:", error)
+    return NextResponse.json({ error: "Impossible de créer la transaction" }, { status: 500 })
+  }
 }

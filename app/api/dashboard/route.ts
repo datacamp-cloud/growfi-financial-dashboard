@@ -18,7 +18,10 @@ export async function GET() {
       where: { userId },
       orderBy: { date: "desc" },
       take: 6,
-      include: { account: { select: { name: true, icon: true } } },
+      include: {
+        account: { select: { name: true, icon: true } },
+        relatedAccount: { select: { name: true, icon: true } },
+      },
     }),
     prisma.goal.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
     prisma.transaction.groupBy({

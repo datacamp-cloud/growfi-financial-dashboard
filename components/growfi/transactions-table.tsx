@@ -14,6 +14,7 @@ export type ApiTransaction = {
   accountId: string
   relatedAccountId?: string | null
   account?: { name: string; icon: string | null }
+  relatedAccount?: { name: string; icon: string | null } | null
 }
 
 function formatDate(iso: string) {
@@ -36,8 +37,9 @@ export function TransactionsTable({ items }: { items: ApiTransaction[] }) {
           {items.map((t) => {
             const accountName = t.account?.name ?? 'Inconnu'
             const accountIcon = t.account?.icon ?? 'Wallet'
+            const destinationName = t.relatedAccount?.name ?? 'Compte destination'
             const isTransfer = t.type === 'transfer'
-            const displayAmount = isTransfer ? Math.abs(t.amount) : t.amount
+            const displayAmount = Math.abs(t.amount)
 
             return (
               <TableRow key={t.id} className="border-border/60">
@@ -50,13 +52,13 @@ export function TransactionsTable({ items }: { items: ApiTransaction[] }) {
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{t.description || t.category}</p>
                       <p className="text-xs text-muted-foreground sm:hidden">
-                        {isTransfer ? `${accountName} · Transfert` : accountName}
+                        {isTransfer ? `${accountName} → ${destinationName}` : accountName}
                       </p>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">
-                  {isTransfer ? `${accountName} · Transfert` : accountName}
+                  {isTransfer ? `${accountName} → ${destinationName}` : accountName}
                 </TableCell>
                 <TableCell className="text-right">
                   <Money

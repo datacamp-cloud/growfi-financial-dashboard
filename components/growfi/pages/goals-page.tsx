@@ -1,5 +1,5 @@
 'use client'
- 
+
 import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import { Icon } from '../icon'
 import { Money, PageHeader, StatBar } from '../shared'
 import { Plus, Loader2 } from 'lucide-react'
 import { AddGoalModal } from '../modals/add-goal-modal'
- 
+
 type Goal = {
   id: string
   name: string
@@ -18,32 +18,37 @@ type Goal = {
   color: string
   deadline: string | null
 }
- 
+
 export function GoalsPage() {
   const [goals, setGoals] = useState<Goal[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
- 
+
   async function fetchGoals() {
-    const res = await fetch('/api/goals')
-    const data = await res.json()
-    setGoals(data)
-    setLoading(false)
+    try {
+      const res = await fetch('/api/goals')
+      if (!res.ok) throw new Error('Impossible de charger les objectifs')
+      const data = await res.json()
+      if (!Array.isArray(data)) throw new Error('Réponse serveur invalide')
+      setGoals(data)
+    } finally {
+      setLoading(false)
+    }
   }
- 
+
   useEffect(() => { fetchGoals() }, [])
- 
+
   function daysRemaining(deadline: string | null) {
     if (!deadline) return null
     const diff = Math.ceil((new Date(deadline).getTime() - Date.now()) / 86400000)
     return diff > 0 ? `${diff} jours restants` : 'Échéance dépassée'
   }
- 
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Objectifs"
-        subtitle="Suivez vos objectifs d'épargne et restez motivé."
+        subtitle="Planifie tes projets et suis ta progression sans modifier le solde de tes comptes."
         action={
           <Button
             onClick={() => setShowModal(true)}
@@ -54,7 +59,7 @@ export function GoalsPage() {
           </Button>
         }
       />
- 
+
       {loading ? (
         <div className="flex h-48 items-center justify-center">
           <Loader2 className="size-8 animate-spin text-neon" />
@@ -95,20 +100,21 @@ export function GoalsPage() {
                       {pct}%
                     </span>
                   </div>
- 
+
                   <div>
                     <h3 className="font-semibold">{g.name}</h3>
                     {daysRemaining(g.deadline) && (
                       <p className="text-xs text-muted-foreground">{daysRemaining(g.deadline)}</p>
                     )}
                   </div>
- 
+
                   <div className="flex flex-col gap-2">
                     <div className="flex items-baseline justify-between">
                       <Money value={g.currentAmount} suffix={false} className="text-base font-extrabold" />
                       <span className="text-xs text-muted-foreground">/ {formatFCFA(g.targetAmount, false)}</span>
                     </div>
                     <StatBar percent={pct} color={g.color} />
+                    <p className="text-[11px] text-muted-foreground">Progression suivie — aucun argent n'est déplacé automatiquement.</p>
                   </div>
                 </CardContent>
               </Card>
@@ -116,7 +122,7 @@ export function GoalsPage() {
           })}
         </div>
       )}
- 
+
       {showModal && (
         <AddGoalModal
           onClose={() => setShowModal(false)}

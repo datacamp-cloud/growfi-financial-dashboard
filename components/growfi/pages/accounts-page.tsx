@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
-import { formatFCFA } from '@/lib/format'
 import { Icon } from '../icon'
 import { Money, PageHeader, StatBar } from '../shared'
 import { Loader2 } from 'lucide-react'
@@ -60,7 +59,7 @@ export function AccountsPage() {
 
       <Card className="overflow-hidden border-0 bg-linear-to-br from-primary/20 via-card to-teal/10 backdrop-blur-xl ring-1 ring-neon/20">
         <CardContent className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-muted-foreground">Total net</span>
+          <span className="text-xs font-medium text-muted-foreground">Solde total</span>
           <Money value={totalBalance} className="text-3xl font-extrabold sm:text-4xl" />
           <p className="mt-2 text-xs text-muted-foreground">
             {accounts.length} compte{accounts.length > 1 ? 's' : ''} connecté{accounts.length > 1 ? 's' : ''}
@@ -103,7 +102,6 @@ export function AccountsPage() {
                   </div>
                   <Money value={account.balance} className="text-xl font-extrabold" suffix={false} />
                   <StatBar percent={share} color={account.color} />
-                  <p className="text-xs text-muted-foreground">Représente {formatFCFA(account.balance)}</p>
                 </CardContent>
               </Card>
             )

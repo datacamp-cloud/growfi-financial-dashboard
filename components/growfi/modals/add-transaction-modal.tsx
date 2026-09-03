@@ -92,13 +92,13 @@ export function AddTransactionModal({ onClose, onSuccess }: { onClose: () => voi
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-muted-foreground">{type === 'transfer' ? 'Compte source' : 'Compte'}</label>
-              <select value={accountId} onChange={(e) => setAccountId(e.target.value)} required className="h-11 rounded-lg border border-border bg-card px-3 text-sm text-foreground">
+              <select value={accountId} onChange={(e) => setAccountId(e.target.value)} required className="h-11 rounded-lg border border-border bg-card px-3 text-sm text-secondary">
                 {accounts.map((a) => <option key={a.id} value={a.id}>{a.icon} {a.name}</option>)}
               </select>
             </div>
             {type === 'transfer' && <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-muted-foreground">Compte destination</label>
-              <select value={relatedAccountId} onChange={(e) => setRelatedAccountId(e.target.value)} required className="h-11 rounded-lg border border-border bg-card px-3 text-sm text-foreground">
+              <select value={relatedAccountId} onChange={(e) => setRelatedAccountId(e.target.value)} required className="h-11 rounded-lg border border-border bg-card px-3 text-sm text-secondary">
                 {accounts.filter((a) => a.id !== accountId).map((a) => <option key={a.id} value={a.id}>{a.icon} {a.name}</option>)}
               </select>
             </div>}
@@ -106,7 +106,7 @@ export function AddTransactionModal({ onClose, onSuccess }: { onClose: () => voi
 
           {type !== 'transfer' && <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-muted-foreground">Catégorie</label>
-            <select value={category} onChange={(e) => setCategory(e.target.value)} className="h-11 rounded-lg border border-border bg-card px-3 text-sm text-foreground">
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="h-11 rounded-lg border border-border bg-card px-3 text-sm text-secondary">
               {categories.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>}

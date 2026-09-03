@@ -13,20 +13,14 @@ export async function GET() {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 
   const [accounts, recentTransactions, goals, monthlyStats] = await Promise.all([
-    prisma.account.findMany({
-      where: { userId },
-      orderBy: { createdAt: "asc" },
-    }),
+    prisma.account.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
     prisma.transaction.findMany({
       where: { userId },
       orderBy: { date: "desc" },
       take: 6,
-      include: { account: { select: { name: true } } },
+      include: { account: { select: { name: true, icon: true } } },
     }),
-    prisma.goal.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-    }),
+    prisma.goal.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
     prisma.transaction.groupBy({
       by: ["type"],
       where: { userId, date: { gte: startOfMonth } },
@@ -34,11 +28,12 @@ export async function GET() {
     }),
   ])
 
-  const totalBalance = accounts.reduce((sum, a) => sum + a.balance, 0)
+  const totalBalance = accounts.reduce((sum, account) => sum + account.balance, 0)
   const monthlyIncome = monthlyStats.find((s) => s.type === "income")?._sum.amount ?? 0
   const monthlyExpenses = monthlyStats.find((s) => s.type === "expense")?._sum.amount ?? 0
-  const savingsRate = monthlyIncome > 0
-    ? Math.round(((monthlyIncome - monthlyExpenses) / monthlyIncome) * 100)
+  const remainingAmount = monthlyIncome - monthlyExpenses
+  const remainingRate = monthlyIncome > 0
+    ? Math.round((remainingAmount / monthlyIncome) * 100)
     : 0
 
   return NextResponse.json({
@@ -46,7 +41,8 @@ export async function GET() {
     totalBalance,
     monthlyIncome,
     monthlyExpenses,
-    savingsRate,
+    remainingAmount,
+    remainingRate,
     accounts,
     recentTransactions,
     goals,

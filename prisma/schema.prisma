@@ -43,8 +43,10 @@ model Account {
   color     String   @default("#4CAF50")
   createdAt DateTime @default(now())
 
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions Transaction[]
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions      Transaction[] @relation("sourceAccount")
+  outgoingTransfers Transaction[] @relation("sourceAccount")
+  incomingTransfers Transaction[] @relation("destinationAccount")
 }
 
 model Transaction {
@@ -62,7 +64,10 @@ model Transaction {
   createdAt        DateTime @default(now())
 
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account        Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  account        Account  @relation("sourceAccount", fields: [accountId], references: [id], onDelete: Cascade)
+  relatedAccount Account? @relation("destinationAccount", fields: [relatedAccountId], references: [id], onDelete: SetNull)
+
+  @@index([relatedAccountId])
 }
 
 model Goal {

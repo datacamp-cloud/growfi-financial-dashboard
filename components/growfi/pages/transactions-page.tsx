@@ -11,26 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { TransactionsTable } from '../transactions-table'
+import { TransactionsTable, type ApiTransaction } from '../transactions-table'
 import { Money, PageHeader } from '../shared'
 import { Search, Loader2 } from 'lucide-react'
-
-// Définition du type basé sur le retour de votre API Prisma
-type ApiTransaction = {
-  id: string
-  amount: number
-  type: string
-  category: string
-  description: string
-  note: string | null
-  date: string
-  source: string
-  accountId: string
-  account?: {
-    name: string
-    icon: string | null
-  }
-}
 
 export function TransactionsPage() {
   const [query, setQuery] = useState('')
@@ -39,33 +22,29 @@ export function TransactionsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // 1. Récupération des transactions depuis l'API
-  // 1. Récupération des transactions depuis l'API avec re-mapping pour le tableau
   useEffect(() => {
     async function fetchTransactions() {
       try {
         setLoading(true)
         setError(null)
         const res = await fetch('/api/transactions')
-        
-        if (!res.ok) {
-          throw new Error('Impossible de charger les transactions')
-        }
-        
-        const data: ApiTransaction[] = await res.json()
 
-        // On transforme les données de l'API pour correspondre à ce qu'attend le tableau statique
-        const mappedData = data.map((t) => ({
+        if (!res.ok) throw new Error('Impossible de charger les transactions')
+
+        const data = await res.json()
+        if (!Array.isArray(data)) throw new Error('Réponse serveur invalide')
+
+        const mappedData: ApiTransaction[] = data.map((t) => ({
           ...t,
-          account: t.account?.name ?? 'Inconnu', // Si le tableau attendait une string pour account
-          icon: t.account?.icon ?? 'Wallet',     // On extrait l'icône du compte vers la racine
-          status: 'completed',                    // Valeur par défaut pour satisfaire le type requis
+          // L'API stocke toujours un montant positif : l'affichage utilise le type
+          // pour représenter une dépense comme une sortie.
+          amount: t.type === 'expense' ? -Math.abs(Number(t.amount)) : Math.abs(Number(t.amount)),
+          account: t.account,
         }))
 
-        // @ts-ignore ou transtypage si nécessaire pour forcer l'acceptation
-        setTransactions(mappedData as any)
-      } catch (err: any) {
-        setError(err.message || 'Une erreur est survenue')
+        setTransactions(mappedData)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Une erreur est survenue')
       } finally {
         setLoading(false)
       }
@@ -74,8 +53,6 @@ export function TransactionsPage() {
     fetchTransactions()
   }, [])
 
-
-  // 2. Extraction dynamique de la liste des comptes uniques présents dans les transactions
   const uniqueAccounts = useMemo(() => {
     const names = new Set<string>()
     transactions.forEach((t) => {
@@ -84,35 +61,34 @@ export function TransactionsPage() {
     return Array.from(names)
   }, [transactions])
 
-  // 3. Filtrage côté client des données reçues
   const filtered = useMemo(
     () =>
       transactions.filter((t) => {
-        const matchesQuery = t.description.toLowerCase().includes(query.toLowerCase())
-        // Correction ici : l'API renvoie le compte dans l'objet imbriqué `account`
+        const searchable = `${t.description ?? ''} ${t.category ?? ''}`.toLowerCase()
+        const matchesQuery = searchable.includes(query.toLowerCase())
         const matchesAccount = account === 'all' || t.account?.name === account
         return matchesQuery && matchesAccount
       }),
     [query, account, transactions],
   )
 
-  // 4. Calculs des totaux dynamiques
-  const inflow = useMemo(() => 
-    filtered.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0),
-    [filtered]
-  )
-  
-  const outflow = useMemo(() => 
-    filtered.filter((t) => t.amount < 0).reduce((s, t) => s + t.amount, 0),
-    [filtered]
+  const inflow = useMemo(
+    () => filtered.filter((t) => t.type === 'income').reduce((sum, t) => sum + Math.abs(t.amount), 0),
+    [filtered],
   )
 
-  // Affichage de l'état de chargement
-  if (loading) return (
-    <div className="flex h-96 items-center justify-center">
-      <Loader2 className="size-8 animate-spin text-neon" />
-    </div>
+  const outflow = useMemo(
+    () => filtered.filter((t) => t.type === 'expense').reduce((sum, t) => sum + Math.abs(t.amount), 0),
+    [filtered],
   )
+
+  if (loading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <Loader2 className="size-8 animate-spin text-neon" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -153,10 +129,7 @@ export function TransactionsPage() {
                 className="h-10 pl-9"
               />
             </div>
-            <Select 
-              value={account} 
-              onValueChange={(val) => val && setAccount(val)}
-            >
+            <Select value={account} onValueChange={(val) => val && setAccount(val)}>
               <SelectTrigger className="h-10 w-full sm:w-48">
                 <SelectValue placeholder="Choisir un compte" />
               </SelectTrigger>

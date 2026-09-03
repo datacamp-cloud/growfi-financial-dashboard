@@ -73,7 +73,7 @@ export function AccountsPage() {
         </div>
       ) : accounts.length === 0 ? (
         <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
-          Aucun compte pour l'instant.
+          Aucun compte pour l&apos;instant.
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

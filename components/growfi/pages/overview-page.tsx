@@ -17,7 +17,8 @@ type DashboardData = {
   totalBalance: number
   monthlyIncome: number
   monthlyExpenses: number
-  savingsRate: number
+  remainingAmount: number
+  remainingRate: number
   accounts: any[]
   recentTransactions: any[]
   goals: any[]
@@ -29,23 +30,30 @@ export function OverviewPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("/api/dashboard").then((r) => r.json()).then((d) => { setData(d); setLoading(false) }).catch(() => setLoading(false))
+    fetch("/api/dashboard")
+      .then((r) => {
+        if (!r.ok) throw new Error("Impossible de charger le tableau de bord")
+        return r.json()
+      })
+      .then((d) => { setData(d); setLoading(false) })
+      .catch(() => setLoading(false))
   }, [])
 
   if (loading) return <div className="flex h-96 items-center justify-center"><Loader2 className="size-8 animate-spin text-neon" /></div>
 
   const firstName = data?.user?.name?.split(" ")[0] ?? "toi"
+  const remainingRate = Math.max(0, Math.min(100, data?.remainingRate ?? 0))
 
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title={`Bienvenue, ${firstName}`} subtitle="Voici l'évolution de tes finances ce mois-ci." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Solde total" value={formatFCFA(data?.totalBalance ?? 0)} icon="Wallet" trend={5.4} accent="neon" />
-        <KpiCard label="Revenus du mois" value={formatFCFA(data?.monthlyIncome ?? 0)} icon="ArrowDownLeft" trend={3.1} accent="primary" />
-        <KpiCard label="Dépenses du mois" value={formatFCFA(data?.monthlyExpenses ?? 0)} icon="ArrowUpRight" trend={-2.4} accent="negative" />
-        <KpiCard label="Reste après dépenses" value={`${data?.savingsRate ?? 0}%`} icon="TrendingUp" accent="gold">
-          <CircularProgress value={data?.savingsRate ?? 0} />
+        <KpiCard label="Solde total" value={formatFCFA(data?.totalBalance ?? 0)} icon="Wallet" accent="neon" />
+        <KpiCard label="Revenus du mois" value={formatFCFA(data?.monthlyIncome ?? 0)} icon="ArrowDownLeft" accent="primary" />
+        <KpiCard label="Dépenses du mois" value={formatFCFA(data?.monthlyExpenses ?? 0)} icon="ArrowUpRight" accent="negative" />
+        <KpiCard label="Reste après dépenses" value={formatFCFA(data?.remainingAmount ?? 0)} icon="TrendingUp" accent="gold">
+          <CircularProgress value={remainingRate} />
         </KpiCard>
       </div>
 
